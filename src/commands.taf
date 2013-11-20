@@ -1,0 +1,66 @@
+#Format is verb: synonyms: keywords (for objects and IOs): IO question word: IO preposition
+#Use a space after the colon to indicate that there are no synonyms/keywords.
+#
+#Verbs beginning with _ are for the system. Verbs beginning with = do not
+#add a move to the Player's numMoves variable.
+#
+#I might want to include prepositions for introducing objects or keywords
+#that help specify which verb to use.
+#
+north: n, go north, go n: 
+south: s, go south, go s: 
+east: e, go east, go e: 
+west: w, go west, go w: 
+up: u, go up, go u: 
+down: d, go down, go d: 
+go: move to, move toward, move towards, travel, exit: 
+inventory: i, items: 
+take: pick, pick up, get, obtain: all, everything
+drop: leave, release: all, everything, bass
+look: l, gaze: 
+examine: x, inspect, investigate, look at: 
+open: open up: 
+close: shut: 
+dig: excavate: 
+jump: leap, bound: 
+climb: scale, ascend: 
+eat: consume, devour, swallow: 
+destroy: smash, break, shatter, obliterate, demolish, bash, break down: 
+search: look in, rummage: 
+enter: go in, go into, go through, move into, move through, travel into, travel through: 
+wear: put on, equip, don: 
+light: : 
+extinguish: put out: 
+cut: slice, sever: 
+harvest: farm: 
+talk: converse, speak: 
+show: present, give: Whom: to
+sleep: doze, nap: 
+unlock: : 
+read: : 
+map: m: 
+think: : 
+help: h: 
+wait: z: 
+=quit: : 
+=save: : "
+=load: restore: "
+=sound: : 
+=_delete: : 
+=_teleport: : *
+=_setfield: : *
+=_setentereffect: : *
+=_die: : *
+=_removeverbeffect: : *
+=_setroomindirection: : *
+=_makefollow: : 
+=_makeunfollow: : 
+=_makehostile: : 
+=_makefriendly: : 
+=_addtoinventory: : 
+=_removeentereffect: : *
+=_addtoconversationeffect: : *
+=_stopsound: : *
+=_playsound: : *
+=_loopsound: : *
+_donothing: : 
