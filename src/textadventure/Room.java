@@ -5,7 +5,8 @@ import org.json.*;
 public class Room extends TAObject {
 	private Room[] adjacentRooms;
 	private Door[] doors;
-	private boolean visited, usedInConversation;
+	private boolean visited;
+	//private boolean usedInConversation;
 	protected int ID;
 	private Set<TAObject> contents;
 	private Set<StaticObject> staticObjects;
@@ -457,9 +458,9 @@ public class Room extends TAObject {
 		return visited;
 	}
 
-	public boolean isUsedInConversation() {
+	/*public boolean isUsedInConversation() {
 		return usedInConversation;
-	}
+	}*/
 
 	public int getNumTakeables() {
 		int numTakeables=0;
@@ -518,9 +519,9 @@ public class Room extends TAObject {
 		this.visited = visited;
 	}
 
-	public void setUsedInConversation(boolean usedInConversation) {
+	/*public void setUsedInConversation(boolean usedInConversation) {
 		this.usedInConversation = usedInConversation;
-	}
+	}*/
 
 	public void setID(int ID) {
 		this.ID = ID;

@@ -8,13 +8,8 @@ public class RoomMakerWindow extends JFrame {
 	private JPanel panel;
 	
 	public RoomMakerWindow() {
-		super("Room Maker");
-		panel=new JPanel();
-		panel.setLayout(new GridLayout(0, 2));
-		panel.add(new JLabel("Name: "));
-		panel.add(new JTextField());
-		panel.add(new JLabel("Description: "));
-		panel.add(new JTextField());
+		super("Room Maker"); //need to make more classes
+		panel=new ObjectPanel("StaticObject");
 		JScrollPane scrollPane=new JScrollPane(panel);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBorder(null);
