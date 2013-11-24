@@ -170,6 +170,30 @@ public abstract class TAObject implements Comparable<TAObject> {
 		this.otherNames=otherNames;
 	}
 
+	public Set<String> getOtherNames() {
+		return otherNames;
+	}
+
+	public void setAdjective(String adjective) {
+		this.adjective = adjective;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public void setTakeable(boolean takeable) {
+		this.takeable = takeable;
+	}
+
+	public void setPrinted(boolean isPrinted) {
+		this.isPrinted = isPrinted;
+	}
+
+	public void setPlural(boolean isPlural) {
+		this.isPlural = isPlural;
+	}
+
 	public int hashCode() {
 		int hash=getName().hashCode();
 		if(getAdjective()!=null)
