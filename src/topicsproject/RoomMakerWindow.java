@@ -1,6 +1,5 @@
 package topicsproject;
 
-import java.awt.GridLayout;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -9,7 +8,7 @@ public class RoomMakerWindow extends JFrame {
 	
 	public RoomMakerWindow() {
 		super("Room Maker"); //need to make more classes
-		panel=new ObjectPanel("StaticObject");
+		panel=new ObjectPanel("Room");
 		JScrollPane scrollPane=new JScrollPane(panel);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBorder(null);

@@ -285,12 +285,13 @@ public class Decoder {
                 }
                 decoder.decodeFrame(header, stream);
             } catch (Exception e) {
-                if (error++ > 1000) {
-                    break;
-                }
-                // TODO should not write directly
                 System.out.println("Error at: " + name + " Frame: " + frame + " Error: " + e.toString());
                 e.printStackTrace();
+            	break;
+                /*if (error++ > 1000) {
+                    break;
+                }*/
+                // TODO should not write directly
             } finally {
                 stream.closeFrame();
             }

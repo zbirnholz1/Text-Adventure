@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -60,15 +59,31 @@ public class ObjectPanel extends JPanel {
 			Field f=fields.poll();
 			add(new JLabel(f.getName(), JLabel.CENTER));
 			FieldTextField textField=new FieldTextField(f);
-			textField.addActionListener(new DefaultListener());
+			if(listeners.get(f.getName())==null)
+				textField.addActionListener(new DefaultListener());
+			else
+				textField.addActionListener(listeners.get(f.getName()));
 			add(textField);
 		}
-		//use reflection to create JLabels and JTextFields for the instance variables
 	}
 
 	private static Map<String, ActionListener> initializeListeners() {
 		Map<String, ActionListener> map=new HashMap<String, ActionListener>();
+		//TODO add special listeners for fields like description, etc.
 		return map;
+	}
+	
+	class FieldTextField extends JTextField {
+		private Field field;
+
+		public FieldTextField(Field f) {
+			super();
+			field=f;
+		}
+
+		public Field getField() {
+			return field;
+		}
 	}
 
 	class DefaultListener implements ActionListener {
@@ -151,18 +166,3 @@ public class ObjectPanel extends JPanel {
 		}
 	}
 }
-
-@SuppressWarnings("serial")
-class FieldTextField extends JTextField {
-	private Field field;
-
-	public FieldTextField(Field f) {
-		super();
-		field=f;
-	}
-
-	public Field getField() {
-		return field;
-	}
-}
-

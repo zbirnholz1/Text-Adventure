@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,7 @@ public class SoundPlayer {
 		currentSoundName="";
 		soundIsOn=true;
 		musicIsEverywhere=false;
+		decoder=new Decoder();
 	}
 
 	public SoundPlayer(JSONObject source) {
@@ -35,6 +37,7 @@ public class SoundPlayer {
 			currentSoundName=source.getString("currentSoundName");
 			soundIsOn=source.getBoolean("soundIsOn");
 			musicIsEverywhere=source.getBoolean("musicIsEverywhere");
+			decoder=new Decoder();
 		} catch(JSONException e){
 			e.printStackTrace();
 			Main.game.getView().println("Something went wrong while loading the sound.");
@@ -54,7 +57,9 @@ public class SoundPlayer {
 		return obj;
 	}
 
-	public void play(final String name) {
+	public void manageDecoder(final String name, final Method method, final Object[] args) {
+		//TODO deal with .wav (intro loop) and .mp3 (main loop) parts of music
+		//should change rooms' musicNames accordingly (i.e. remove the file extensions)
 		if(musicIsEverywhere)
 			return;
 		stop();
@@ -63,124 +68,68 @@ public class SoundPlayer {
 		try {
 			InputStream in = getClass().getResourceAsStream("/music/"+name);
 			final BufferedInputStream bin=new BufferedInputStream(in, 128*1024);
+			args[0]="/music/"+args[0];
+			args[1]=bin;
 			final ExecutorService service=Executors.newSingleThreadExecutor();
 			service.execute(
 					new Runnable() {
 						public void run() {
 							try {
 								service.shutdown();
-								decoder.play("/music/"+name, bin);
-							} catch (IOException ex) {
+								method.invoke(decoder, args);
+								//decoder.play("/music/"+name, bin);
+							} catch (Exception ex) {
 								ex.printStackTrace();
 							}
 						}
 					}
 					);
 		} catch(Exception e){e.printStackTrace();}
+	}
+
+	public void play(final String name) {
+		try {
+			Method method=decoder.getClass().getDeclaredMethod("play", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream")});
+			manageDecoder(name, method, new Object[]{name, null});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loop(final String name, final int numTimes) {
-		if(musicIsEverywhere)
-			return;
-		stop();
-		currentSoundName=name;
-		decoder=new Decoder();
-		final InputStream in;
 		try {
-			in = getClass().getResourceAsStream("/music/"+name);
-			final ExecutorService service=Executors.newSingleThreadExecutor();
-			service.execute(
-					new Runnable() {
-						public void run() {
-							try {
-								service.shutdown();
-								decoder.loop("/music/"+name, in, numTimes);
-							} catch (IOException ex) {
-								ex.printStackTrace();
-							}
-						}
-					}
-					);
-		} catch(Exception e){e.printStackTrace();}
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, numTimes});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loop(final String name) {
-		if(musicIsEverywhere)
-			return;
-		stop();
-		currentSoundName=name;
-		decoder=new Decoder();
-		final InputStream in;
 		try {
-			in = getClass().getResourceAsStream("/music/"+name);
-			final ExecutorService service=Executors.newSingleThreadExecutor();
-			service.execute(
-					new Runnable() {
-						public void run() {
-							try {
-								service.shutdown();
-								decoder.loop("/music/"+name, in);
-							} catch (IOException ex) {
-								ex.printStackTrace();
-							}
-						}
-					}
-					);
-		} catch(Exception e){e.printStackTrace();}
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream")});
+			manageDecoder(name, method, new Object[]{name, null});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loop(final String name, final long offset) {
-		if(musicIsEverywhere)
-			return;
-		if(offset==0) {
-			loop(name);
-			return;
-		}
-		stop();
-		currentSoundName=name;
-		decoder=new Decoder();
-		final InputStream in;
 		try {
-			in = getClass().getResourceAsStream("/music/"+name);
-			final ExecutorService service=Executors.newSingleThreadExecutor();
-			service.execute(
-					new Runnable() {
-						public void run() {
-							try {
-								service.shutdown();
-								decoder.loop("/music/"+name, in, offset);
-							} catch (IOException ex) {
-								ex.printStackTrace();
-							}
-						}
-					}
-					);
-		} catch(Exception e){e.printStackTrace();}
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Long(offset).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, offset});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loop(final String name, final int numTimes, final long offset) {
-		if(musicIsEverywhere)
-			return;
-		stop();
-		currentSoundName=name;
-		decoder=new Decoder();
-		final InputStream in;
 		try {
-			in = getClass().getResourceAsStream("/music/"+name);
-			final ExecutorService service=Executors.newSingleThreadExecutor();
-			service.execute(
-					new Runnable() {
-						public void run() {
-							try {
-								service.shutdown();
-								decoder.loop("/music/"+name, in, numTimes, offset);
-							} catch (IOException ex) {
-								ex.printStackTrace();
-							}
-						}
-					}
-					);
-		} catch(Exception e){e.printStackTrace();}
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass(), new Long(offset).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, numTimes, offset});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void stop() {
@@ -219,7 +168,7 @@ public class SoundPlayer {
 	public boolean musicIsEverywhere() {
 		return musicIsEverywhere;
 	}
-	
+
 	public void saveInfo() {
 		try {
 			PrintWriter out=new PrintWriter(new BufferedWriter(new FileWriter(Game.supportPath+"saves/temp.taf/soundPlayer.taf")));
