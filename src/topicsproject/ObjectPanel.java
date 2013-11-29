@@ -3,6 +3,10 @@ package topicsproject;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -22,8 +26,9 @@ import textadventure.TAObject;
 public class ObjectPanel extends JPanel {
 	private Class<?> objectClass;
 	private TAObject instance;
+	private JTextField fieldInFocus;
 
-	public static final Map<String, ActionListener> listeners=initializeListeners();
+	private final Map<String, MouseListener> mouseListeners=initializeMouseListeners();
 
 	public ObjectPanel(String className) {
 		super();
@@ -59,16 +64,30 @@ public class ObjectPanel extends JPanel {
 			Field f=fields.poll();
 			add(new JLabel(f.getName(), JLabel.CENTER));
 			FieldTextField textField=new FieldTextField(f);
-			if(listeners.get(f.getName())==null)
-				textField.addActionListener(new DefaultListener());
-			else
-				textField.addActionListener(listeners.get(f.getName()));
+			textField.addActionListener(new DefaultActionListener());
+			if(mouseListeners.get(f.getName())!=null)
+				textField.addMouseListener(mouseListeners.get(f.getName()));
 			add(textField);
 		}
 	}
 
-	private static Map<String, ActionListener> initializeListeners() {
-		Map<String, ActionListener> map=new HashMap<String, ActionListener>();
+	private Map<String, MouseListener> initializeMouseListeners() {
+		Map<String, MouseListener> map=new HashMap<String, MouseListener>();
+		map.put("description", new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+				new TextInputWindow((JTextField)e.getSource());
+			}
+			public void mouseEntered(MouseEvent arg0) {
+			}
+			public void mouseExited(MouseEvent arg0) {
+			}
+			public void mousePressed(MouseEvent arg0) { 
+			}
+			public void mouseReleased(MouseEvent arg0) {
+			}
+			
+		});
 		//TODO add special listeners for fields like description, etc.
 		return map;
 	}
@@ -86,7 +105,7 @@ public class ObjectPanel extends JPanel {
 		}
 	}
 
-	class DefaultListener implements ActionListener {
+	class DefaultActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 			FieldTextField source=(FieldTextField)e.getSource();
