@@ -3,8 +3,6 @@ package topicsproject;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
@@ -195,7 +193,7 @@ public class ObjectPanel extends JPanel {
 		}
 
 	}
-
+	
 	class DefaultActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
