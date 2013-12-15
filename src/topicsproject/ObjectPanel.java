@@ -15,7 +15,6 @@ import java.util.Stack;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -68,7 +67,7 @@ public class ObjectPanel extends JPanel {
 			}
 			else {
 				FieldTextField textField=new FieldTextField(f);
-				textField.addActionListener(new DefaultActionListener());
+				textField.addActionListener(new DefaultActionListener(this));
 				if(mouseListeners.get(f.getName())!=null)
 					textField.addMouseListener(mouseListeners.get(f.getName()));
 				add(textField);
@@ -76,31 +75,12 @@ public class ObjectPanel extends JPanel {
 		}
 	}
 
-	private Map<String, MouseListener> initializeMouseListeners() {
-		Map<String, MouseListener> map=new HashMap<String, MouseListener>();
-		map.put("description", new MouseListener() {
-
-			public void mouseClicked(MouseEvent e) {
-				new TextInputWindow((JTextField)e.getSource());
-			}
-			public void mouseEntered(MouseEvent arg0) {
-			}
-			public void mouseExited(MouseEvent arg0) {
-			}
-			public void mousePressed(MouseEvent arg0) { 
-			}
-			public void mouseReleased(MouseEvent arg0) {
-			}
-
-		});
-		//TODO add special listeners for fields like description, etc.
-		return map;
-	}
-
-	private void setBasicField(Field field, String text, Exception e1) {
-		String methodName=Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+	public void setBasicField(Field field, String text, Exception e1) {
 		Class<?> c=objectClass;
 		Class<?> type=field.getType();
+		String methodName=Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+		if(type.getName().equals("boolean")&&!methodName.substring(0, 2).equals("Is"))
+			methodName="Is"+methodName;
 		while(!c.getName().equals("java.lang.Object")) {
 			try {
 				Method method=c.getDeclaredMethod("set"+methodName, new Class<?>[]{type});
@@ -131,8 +111,12 @@ public class ObjectPanel extends JPanel {
 		} catch(Exception e2) {
 			Method getMethod=null;
 			String getMethodName="get"+methodName;
-			if(type.getName().equals("boolean"))
-				getMethodName="is"+methodName;
+			if(type.getName().equals("boolean")) {
+				if(methodName.substring(0, 2).equals("Is"))
+					getMethodName="i"+methodName.substring(1);
+				else
+					getMethodName="is"+methodName;
+			}
 			c=objectClass;
 			while(!c.getName().equals("java.lang.Object")) {
 				try {
@@ -150,7 +134,7 @@ public class ObjectPanel extends JPanel {
 				else {
 					if(e1!=null)
 						e1.printStackTrace();
-					else 
+					else
 						System.out.println("Error! Field: "+field+", Value: "+text);
 				}
 			} catch(Exception e3) {
@@ -161,6 +145,31 @@ public class ObjectPanel extends JPanel {
 				e3.printStackTrace();
 			}
 		}
+	}
+
+	public TAObject getInstance() {
+		return instance;
+	}
+
+	private Map<String, MouseListener> initializeMouseListeners() {
+		Map<String, MouseListener> map=new HashMap<String, MouseListener>();
+		map.put("description", new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+				new TextInputWindow((JTextField)e.getSource());
+			}
+			public void mouseEntered(MouseEvent arg0) {
+			}
+			public void mouseExited(MouseEvent arg0) {
+			}
+			public void mousePressed(MouseEvent arg0) { 
+			}
+			public void mouseReleased(MouseEvent arg0) {
+			}
+
+		});
+		//TODO add special listeners for fields like description, etc.
+		return map;
 	}
 
 	class FieldTextField extends JTextField {
@@ -192,35 +201,5 @@ public class ObjectPanel extends JPanel {
 			}
 		}
 
-	}
-	
-	class DefaultActionListener implements ActionListener {
-
-		public void actionPerformed(ActionEvent e) {
-			FieldTextField source=(FieldTextField)e.getSource();
-			String text=source.getText();
-			Class<?> type=source.getField().getType();
-			try {
-				if(type.getName().equals("boolean")) {
-					if(!text.equalsIgnoreCase("true")&&!text.equalsIgnoreCase("false")) {
-						JOptionPane.showMessageDialog(ObjectPanel.this, "Please enter a boolean value for "+source.getField().getName());
-						return;
-					}
-					source.getField().set(instance, Boolean.parseBoolean(text));
-				}
-				else if(type.getName().equals("int"))
-					source.getField().set(instance, Integer.parseInt(text));
-				else if(type.getName().equals("java.lang.String"))
-					source.getField().set(instance, text);
-				else
-					System.out.println("For some reason the field for "+text+" of type "+type.getName()+" was not set.");
-				System.out.println("Unless it says otherwise above, "+source.getField().getName()+" has been assigned the value of "+text);
-			} catch(NumberFormatException e1) {
-				JOptionPane.showMessageDialog(ObjectPanel.this, "Please enter an int value for "+source.getField().getName());
-				return;
-			} catch(IllegalAccessException e1) {
-				setBasicField(source.getField(), text, e1);
-			}
-		}
 	}
 }

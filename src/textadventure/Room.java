@@ -515,7 +515,7 @@ public class Room extends TAObject {
 		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0<=direction<6");}
 	}
 
-	public void setVisited(boolean visited) {
+	public void setIsVisited(boolean visited) {
 		this.visited = visited;
 	}
 

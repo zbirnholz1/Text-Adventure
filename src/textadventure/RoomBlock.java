@@ -45,9 +45,9 @@ public class RoomBlock {
 				room.setName(source.getString("name"));
 				room.setDescription(source.getString("description"));
 				if(source.has("visited"))
-					room.setVisited(source.getBoolean("visited"));
+					room.setIsVisited(source.getBoolean("visited"));
 				else
-					room.setVisited(false);
+					room.setIsVisited(false);
 				if(source.has("directionEquivalents")) {
 					JSONArray JSONDirectionEquivalents=source.getJSONArray("directionEquivalents");
 					ArrayList<List<String>> directionEquivalents=new ArrayList<List<String>>(6);

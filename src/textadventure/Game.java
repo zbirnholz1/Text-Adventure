@@ -88,7 +88,7 @@ public class Game {
 				"    (You: I'm visiting my former master who taught me everything I know about chartography. I was his apprentice until last year, when I went off to do my own work. " +
 				"Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I thought, and I've walked all the way from the last town.)^\n");
 		view.println(player.getRoom().getFullText());
-		player.getRoom().setVisited(true);
+		player.getRoom().setIsVisited(true);
 		view.println();
 	}
 
@@ -889,7 +889,7 @@ public class Game {
 					block=new RoomBlock(0, "temp");
 					player.setRoom(block.getFirstRoom());
 					view.println(player.getRoom().getFullText());
-					player.getRoom().setVisited(true);
+					player.getRoom().setIsVisited(true);
 					view.setGameListener(null);
 				}
 				view.setGameListener(null);

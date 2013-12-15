@@ -222,7 +222,7 @@ public class Player extends TACharacter {
 		if(room.isVisited())
 			Main.game.getView().println(room.getShortText());
 		else {
-			room.setVisited(true);
+			room.setIsVisited(true);
 			Main.game.getView().println(room.getFullText());
 		}
 		String str=room.getEnterEffect();

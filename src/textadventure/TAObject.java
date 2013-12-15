@@ -178,19 +178,19 @@ public abstract class TAObject implements Comparable<TAObject> {
 		this.adjective = adjective;
 	}
 
-	public void setVisible(boolean visible) {
+	public void setIsVisible(boolean visible) {
 		this.visible = visible;
 	}
 
-	public void setTakeable(boolean takeable) {
+	public void setIsTakeable(boolean takeable) {
 		this.takeable = takeable;
 	}
 
-	public void setPrinted(boolean isPrinted) {
+	public void setIsPrinted(boolean isPrinted) {
 		this.isPrinted = isPrinted;
 	}
 
-	public void setPlural(boolean isPlural) {
+	public void setIsPlural(boolean isPlural) {
 		this.isPlural = isPlural;
 	}
 

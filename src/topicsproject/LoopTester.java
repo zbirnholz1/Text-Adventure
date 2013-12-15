@@ -19,7 +19,7 @@ public class LoopTester {
 	public static final SoundPlayer s=new SoundPlayer();
 
 	public static void main(String[] args) throws Exception {
-		File soundFile = new File("knightsold.wav");
+		File soundFile = new File("knights.wav");
 		AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 		final Clip clip=AudioSystem.getClip();
 		LoopLineListener lineListener=new LoopLineListener("knights.mp3");
