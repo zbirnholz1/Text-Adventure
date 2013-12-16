@@ -42,6 +42,22 @@ public class Weapon extends Attack {
 	public boolean isCounterAttack() {
 		return isCounterAttack;
 	}
+	
+	public void setPower(int power) {
+		this.power = power;
+	}
+
+	public void setAccuracy(double accuracy) {
+		this.accuracy = accuracy;
+	}
+
+	public void setIsRanged(boolean isRanged) {
+		this.isRanged = isRanged;
+	}
+
+	public void setIsCounterAttack(boolean isCounterAttack) {
+		this.isCounterAttack = isCounterAttack;
+	}
 
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
 		return null;

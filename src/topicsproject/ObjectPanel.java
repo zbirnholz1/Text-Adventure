@@ -44,9 +44,10 @@ public class ObjectPanel extends JPanel {
 		Stack<Class<?>> classes=new Stack<Class<?>>();
 		Class<?> c=objectClass;
 		classes.add(c);
-		while(!c.getName().equals("textadventure.TAObject")) {
-			c=c.getSuperclass();
+		c=c.getSuperclass();
+		while(!c.getName().equals("java.lang.Object")) {
 			classes.add(c);
+			c=c.getSuperclass();
 		}
 		Queue<Field> fields=new LinkedList<Field>();
 		while(!classes.isEmpty()) {
