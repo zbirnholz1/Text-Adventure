@@ -1,7 +1,7 @@
 package textadventure;
 import org.json.JSONObject;
 
-public class StaticObject extends TAObject{
+public class StaticObject extends TAObject {
 	
 	public StaticObject() {
 		super();

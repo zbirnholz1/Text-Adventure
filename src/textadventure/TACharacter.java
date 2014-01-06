@@ -12,6 +12,8 @@ public abstract class TACharacter extends TAObject {
 	protected int proximity;
 	protected Room room;
 	//protected int HP, etc. OR protected int[] stats (which is better?)
+	protected int HP;
+	protected int speed;
 
 	public TACharacter() {
 		super();
@@ -239,5 +241,21 @@ public abstract class TACharacter extends TAObject {
 	
 	public int getProximity() {
 		return proximity;
+	}
+	
+	public int getHP() {
+		return HP;
+	}
+	
+	public void setHP(int newHP) {
+		HP=newHP;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
+	public void setSpeed(int newSpeed) {
+		speed=newSpeed;
 	}
 }
