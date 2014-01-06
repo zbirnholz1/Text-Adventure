@@ -126,8 +126,8 @@ public class RoomBlock {
 					for(TACharacter c:room.getCharacters()) {
 						for(String f:c.getFollowingCharacterNames())
 							((TACharacter)room.getObject(f)).follow(c);
-						for(String h:c.getHostileCharacterNames())
-							((TACharacter)room.getObject(h)).becomeHostileTo(c);
+						/*for(String h:c.getHostileCharacterNames())
+							((TACharacter)room.getObject(h)).becomeHostileTo(c);*/
 					}
 				}
 				line=reader.readLine(); //or however many lines constitute one Room

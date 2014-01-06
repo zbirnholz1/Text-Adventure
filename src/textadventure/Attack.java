@@ -1,7 +1,7 @@
 package textadventure;
 import org.json.JSONObject;
 
-public abstract class Attack extends TAObject {	
+public abstract class Attack extends StaticObject {	
 	
 	public Attack(JSONObject source) {
 		super(source);

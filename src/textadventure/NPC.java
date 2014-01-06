@@ -18,19 +18,21 @@ public class NPC extends TACharacter {
 				nextConversationNumber=source.getInt("currentConversation");
 			else
 				nextConversationNumber=0;
-			JSONArray JSONAllConversationStarters=source.getJSONArray("conversationStarters");
-			conversationStarters=new ArrayList<List<String>>();
-			for(int i=0; i<JSONAllConversationStarters.length(); i++) {
-				JSONArray JSONConversationStarters=JSONAllConversationStarters.getJSONArray(i);
-				List<String> list=new ArrayList<String>(JSONConversationStarters.length());
-				for(int j=0; j<JSONConversationStarters.length(); j++)
-					list.add(JSONConversationStarters.getString(j));
-				conversationStarters.add(list);
+			if(source.has("conversationStarters")) {
+				JSONArray JSONAllConversationStarters=source.getJSONArray("conversationStarters");
+				conversationStarters=new ArrayList<List<String>>();
+				for(int i=0; i<JSONAllConversationStarters.length(); i++) {
+					JSONArray JSONConversationStarters=JSONAllConversationStarters.getJSONArray(i);
+					List<String> list=new ArrayList<String>(JSONConversationStarters.length());
+					for(int j=0; j<JSONConversationStarters.length(); j++)
+						list.add(JSONConversationStarters.getString(j));
+					conversationStarters.add(list);
+				}
+				JSONArray JSONConversationRooms=source.getJSONArray("conversationRooms");
+				conversationRooms=new ArrayList<Integer>(JSONConversationRooms.length());
+				for(int i=0; i<JSONConversationRooms.length(); i++)
+					conversationRooms.add(JSONConversationRooms.getInt(i));
 			}
-			JSONArray JSONConversationRooms=source.getJSONArray("conversationRooms");
-			conversationRooms=new ArrayList<Integer>(JSONConversationRooms.length());
-			for(int i=0; i<JSONConversationRooms.length(); i++)
-				conversationRooms.add(JSONConversationRooms.getInt(i));
 		} catch(JSONException e) {Main.game.getView().println("Something went wrong: "+e);}
 		String fileName=name;
 		if(adjective!=null)
@@ -225,6 +227,10 @@ public class NPC extends TACharacter {
 			c.setRoom(room);
 		return null;
 	}
+	
+	public void attack(TACharacter defender) {
+		//TODO
+	}
 
 	public int getCurrentConversationNumber() {
 		return nextConversationNumber;
@@ -232,5 +238,9 @@ public class NPC extends TACharacter {
 
 	public Conversation getConversation(int number) {
 		return conversations.get(number);
+	}
+
+	public boolean isHostile() {
+		return proximity>=0;
 	}
 }

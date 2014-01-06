@@ -7,8 +7,9 @@ public abstract class TACharacter extends TAObject {
 	protected Set<Attack> attacks;
 	protected List<TACharacter> followingCharacters;
 	protected List<String> followingCharacterNames;
-	protected List<TACharacter> hostileCharacters;
-	protected List<String> hostileCharacterNames;
+	/*protected List<TACharacter> hostileCharacters;
+	protected List<String> hostileCharacterNames;*/
+	protected int proximity;
 	protected Room room;
 	//protected int HP, etc. OR protected int[] stats (which is better?)
 
@@ -17,8 +18,8 @@ public abstract class TACharacter extends TAObject {
 		inventory=new TreeSet<TAObject>();
 		followingCharacters=new LinkedList<TACharacter>();
 		followingCharacterNames=new LinkedList<String>();
-		hostileCharacters=new LinkedList<TACharacter>();
-		hostileCharacterNames=new LinkedList<String>();
+		/*hostileCharacters=new LinkedList<TACharacter>();
+		hostileCharacterNames=new LinkedList<String>();*/
 		attacks=new TreeSet<Attack>();
 	}
 
@@ -49,13 +50,17 @@ public abstract class TACharacter extends TAObject {
 				for(int i=0; i<JSONFollowingCharacterNames.length(); i++)
 					followingCharacterNames.add(JSONFollowingCharacterNames.getString(i));
 			}
-			hostileCharacters=new LinkedList<TACharacter>();
+			/*hostileCharacters=new LinkedList<TACharacter>();
 			hostileCharacterNames=new LinkedList<String>();
 			if(source.has("hostileCharacters")) {
 				JSONArray JSONHostileCharacterNames=source.getJSONArray("hostileCharacters");
 				for(int i=0; i<JSONHostileCharacterNames.length(); i++)
 					hostileCharacterNames.add(JSONHostileCharacterNames.getString(i));
-			}
+			}*/
+			if(source.has("proximity"))
+				proximity=source.getInt("proximity");
+			else
+				proximity=-1;
 			attacks=new TreeSet<Attack>();
 			if(source.has("weapons")) {
 				JSONArray JSONAttacks=source.getJSONArray("weapons");
@@ -89,8 +94,9 @@ public abstract class TACharacter extends TAObject {
 			obj.put("chests", JSONChests);
 			for(TACharacter c:followingCharacters)
 				obj.accumulate("followingCharacters", c.getName());
-			for(TACharacter c:hostileCharacters)
-				obj.accumulate("hostileCharacters", c.getName());
+			/*for(TACharacter c:hostileCharacters)
+				obj.accumulate("hostileCharacters", c.getName());*/
+			obj.put("proximity", proximity);
 			for(Attack a:attacks) {
 				if(a instanceof Weapon)
 					obj.accumulate("weapons", a.toJSONObject());
@@ -111,7 +117,7 @@ public abstract class TACharacter extends TAObject {
 		otherCharacter.getFollowingCharacters().remove(this);
 	}
 
-	public void becomeHostileTo(TACharacter otherCharacter) {
+	/*public void becomeHostileTo(TACharacter otherCharacter) {
 		otherCharacter.getHostileCharacters().add(this);
 		this.getHostileCharacters().add(otherCharacter);
 	}
@@ -119,7 +125,7 @@ public abstract class TACharacter extends TAObject {
 	public void becomeFriendlyTo(TACharacter otherCharacter) {
 		otherCharacter.getHostileCharacters().remove(this);
 		this.getHostileCharacters().remove(otherCharacter);
-	}
+	}*/
 
 	public abstract List<String> go(int direction);
 
@@ -217,11 +223,21 @@ public abstract class TACharacter extends TAObject {
 		return followingCharacterNames;
 	}
 
-	public List<TACharacter> getHostileCharacters() {
+	/*public List<TACharacter> getHostileCharacters() {
 		return hostileCharacters;
 	}
 
 	public List<String> getHostileCharacterNames() {
 		return hostileCharacterNames;
+	}*/
+	
+	public abstract void attack(TACharacter defender); //only called if it's the player or isHostile()==true
+	
+	public void setProximity(int newProximity) {
+		proximity=newProximity;
+	}
+	
+	public int getProximity() {
+		return proximity;
 	}
 }

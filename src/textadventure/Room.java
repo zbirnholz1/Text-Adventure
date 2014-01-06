@@ -417,8 +417,8 @@ public class Room extends TAObject {
 
 		}
 		for(TACharacter c:characters)
-			if(!Main.game.getPlayer().getFollowingCharacters().contains(c))
-				text+="The "+c.getFullName()+" is standing here.";
+			if(!c.equals(Main.game.getPlayer())&&!Main.game.getPlayer().getFollowingCharacters().contains(c))
+				text+="\nThe "+c.getFullName()+" is standing here.";
 		return text;
 	}
 

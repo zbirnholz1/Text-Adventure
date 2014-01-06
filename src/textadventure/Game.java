@@ -74,7 +74,7 @@ public class Game {
 					});
 				}
 				else {
-					view.println("\n\n\nWelcome to Text Adventure! Regardless of whether you're a seasoned veteran of text adventures or a new player, it is recommended that type \"help\" for the basics of how to play. Have fun, and thanks for playing!^\n");
+					view.println("\n\n\nWelcome to Text Adventure! Regardless of whether you're a seasoned veteran of text adventures or a new player, it is recommended that you type \"help\" for the basics of how to play. Have fun, and thanks for playing!^\n");
 					start();
 					view.setGameListener(null);
 				}
@@ -921,12 +921,16 @@ public class Game {
 		((TACharacter)player.getRoom().getObject(parser.getObjectName())).stopFollowing(player);
 	}
 
-	public void makehostile() {
+	/*public void makehostile() {
 		((TACharacter)player.getRoom().getObject(parser.getObjectName())).becomeHostileTo(player);
 	}
 
 	public void makefriendly() {
 		((TACharacter)player.getRoom().getObject(parser.getObjectName())).becomeFriendlyTo(player);
+	}*/
+	
+	public void setproximity() {
+		((TACharacter)player.getRoom().getObject(parser.getObjectName())).setProximity(Integer.parseInt(parser.getIndirectObjectName()));
 	}
 
 	public void addtoinventory() {

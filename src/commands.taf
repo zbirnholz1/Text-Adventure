@@ -57,6 +57,7 @@ wait: z:
 =_makeunfollow: : 
 =_makehostile: : 
 =_makefriendly: : 
+=_setproximity: : *
 =_addtoinventory: : 
 =_removeentereffect: : *
 =_addtoconversationeffect: : *

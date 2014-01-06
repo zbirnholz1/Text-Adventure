@@ -265,6 +265,10 @@ public class Player extends TACharacter {
 		} catch(Exception e){Main.game.getView().println("There was a problem saving your progress: "+e);e.printStackTrace();}
 	}
 	
+	public void attack(TACharacter defender) {
+		//TODO
+	}
+	
 	public String getInventoryText() {
 		if(inventory.size()==0||(inventory.size()==1&&has("backpack")))
 			return "You have nothing in your inventory.";
