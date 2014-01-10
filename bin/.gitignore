@@ -1,5 +1,6 @@
 /blocklocations.taf
 /blocks
+/combat
 /commands.taf
 /lightobjects.taf
 /mp3
@@ -7,4 +8,3 @@
 /textadventure
 /topicsproject
 /org
-/combat

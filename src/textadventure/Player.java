@@ -30,6 +30,7 @@ public class Player extends TACharacter {
 	public Player(JSONObject source) {
 		super(source);
 		isPrinted=false;
+		proximity=0;
 		try {
 			numMoves=source.getInt("numMoves");
 			loadedRoomID=source.getInt("roomID");

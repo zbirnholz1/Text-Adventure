@@ -241,6 +241,6 @@ public class NPC extends TACharacter {
 	}
 
 	public boolean isHostile() {
-		return proximity>=0;
+		return proximity>0;
 	}
 }

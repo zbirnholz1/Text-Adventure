@@ -13,7 +13,10 @@ public abstract class TACharacter extends TAObject {
 	protected Room room;
 	//protected int HP, etc. OR protected int[] stats (which is better?)
 	protected int HP;
+	protected int strength;
+	protected int intelligence;
 	protected int speed;
+	protected Armor armor;
 
 	public TACharacter() {
 		super();
@@ -62,7 +65,7 @@ public abstract class TACharacter extends TAObject {
 			if(source.has("proximity"))
 				proximity=source.getInt("proximity");
 			else
-				proximity=-1;
+				proximity=0;
 			attacks=new TreeSet<Attack>();
 			if(source.has("weapons")) {
 				JSONArray JSONAttacks=source.getJSONArray("weapons");
@@ -251,11 +254,35 @@ public abstract class TACharacter extends TAObject {
 		HP=newHP;
 	}
 	
+	public int getStrength() {
+		return strength;
+	}
+	
+	public void setStrength(int newStrength) {
+		strength=newStrength;
+	}
+	
+	public int getIntelligence() {
+		return intelligence;
+	}
+	
+	public void setIntelligence(int newIntelligence) {
+		intelligence=newIntelligence;
+	}
+	
 	public int getSpeed() {
 		return speed;
 	}
 	
 	public void setSpeed(int newSpeed) {
 		speed=newSpeed;
+	}
+	
+	public Armor getArmor() {
+		return armor;
+	}
+	
+	public void setArmor(Armor newArmor) {
+		armor=newArmor;
 	}
 }
