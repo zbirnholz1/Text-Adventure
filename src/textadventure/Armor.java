@@ -1,21 +1,30 @@
 package textadventure;
 
 public class Armor extends TAObject {
-	private int weight;
-	private int armor;
+	private int weight, rating;
+	private Material material;
+	private Structure structure;
 
-	@Override
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
-		// TODO Auto-generated method stub
-		return null;
+		if(verb.equals("wear")&&thisIsDO)
+			Main.game.getPlayer().setArmor(this);
+		return "";
 	}
 	
 	public int getWeight() {
 		return weight;
 	}
 	
-	public int getArmor() {
-		return armor;
+	public int getRating() {
+		return rating;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public Structure getStructure() {
+		return structure;
 	}
 
 }

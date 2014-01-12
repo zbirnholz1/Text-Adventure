@@ -9,6 +9,7 @@ import javax.swing.text.*;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 	private JTextArea textArea;
+	private JTextPane playerStats;
 	private int promptPosition;
 	private WindowListener exitListener;
 	private KeyListener keyListener;
@@ -22,7 +23,7 @@ public class View extends JFrame {
 		super("Text Adventure");
 		exitListener = new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if(JOptionPane.showConfirmDialog(View.this, "Your game is still active.\nAre you sure you want to quit?\nYour progress will be lost.", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE)==JOptionPane.YES_OPTION)
+				if(JOptionPane.showConfirmDialog(View.this, "Your game is still active.\nAre you sure you want to quit?\nYour unsaved progress will be lost.", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE)==JOptionPane.YES_OPTION)
 					Main.game.quit(false);
 			}
 		};
@@ -66,6 +67,19 @@ public class View extends JFrame {
 		};
 		pressAnyKeyListener=new PressAnyKeyListener();
 		
+		playerStats=new JTextPane();
+		StyledDocument doc = playerStats.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		playerStats.setText("About you:\n\nYou don't have\nany stats yet!\n\nPlease load a\nsaved game or\nstart a new one.");
+		playerStats.setEditable(false);
+		playerStats.setBackground(getBackground());
+		JPanel statsPanel=new JPanel();
+		statsPanel.add(playerStats);
+		//statsPanel.setBackground(textArea.getBackground().darker());
+		add(statsPanel, BorderLayout.WEST);
+		
 		textArea=new JTextArea();
 		textArea.setMargin(new Insets(10, 10, 10, 10));
 		//textArea.setFont(new Font("GillSans", Font.PLAIN, 14));
@@ -81,12 +95,12 @@ public class View extends JFrame {
 		JScrollPane scrollPane=new JScrollPane(textArea);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBorder(null);
-		add(scrollPane);
-		validate();
-		setSize(575, 375);
+		add(scrollPane, BorderLayout.CENTER);
+		setSize(625, 425);
 		setMinimumSize(new Dimension(575, 375));
 		setLocation(30, 30);
 		setVisible(true);
+		textArea.requestFocusInWindow();
 		isWaitingForKeyPress=false;
 		timerQueue=new LinkedList<TypewriterTimer>();
 		printQueue=new LinkedList<String>();
@@ -265,6 +279,26 @@ public class View extends JFrame {
 	
 	public void printlnNPC(String str, boolean shouldPause) {
 		printNPC(str+"\n", shouldPause);
+	}
+	
+	public void updateStatsText() {
+		String stats="About you:\n\n"
+				    +"HP: "+Main.game.getPlayer().getHP()+"/"+Main.game.getPlayer().getMaxHP()+"\n"
+					+"Strength: "+Main.game.getPlayer().getStrength()+"\n"
+					+"Intelligence: "+Main.game.getPlayer().getIntelligence()+"\n"
+					+"Speed: "+Main.game.getPlayer().getSpeed()+"\n\n"
+					+"Armor:\n";
+		if(Main.game.getPlayer().getArmor()==null)
+			stats+="None equipped";
+		else {
+			stats+=Main.game.getPlayer().getArmor().getFullName()+"\n"
+				  +"("+Main.game.getPlayer().getArmor().getMaterial().toString()+", "+Main.game.getPlayer().getArmor().getStructure().toString()+")\n"
+				  +"Rating: ";
+			if(Main.game.getPlayer().getArmor().getRating()>=0)
+				stats+="+";
+			stats+=Main.game.getPlayer().getArmor().getRating();
+		}
+		playerStats.setText(stats);
 	}
 
 	public void stopResponding() {

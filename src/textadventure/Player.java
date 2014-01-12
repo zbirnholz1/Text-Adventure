@@ -25,6 +25,10 @@ public class Player extends TACharacter {
 		objectives.add("You've finally made it to your former master's house, but he's clearly not home and something seems amiss. You should investigate a little and see what you can find around here.");
 		objectives.add("That huge oak tree looks suspicious to you and deserves a closer inspection.");
 		isPrinted=false;
+		HP=9;
+		strength=1;
+		intelligence=2;
+		speed=2;
 	}
 	
 	public Player(JSONObject source) {
@@ -83,8 +87,8 @@ public class Player extends TACharacter {
 		}
 		if(inventory.size()<INVENTORY_CAPACITY) {
 			if(inventory.add(toTake)) {
-				if(toTake instanceof Attack)
-					attacks.add((Attack)toTake);
+				if(toTake instanceof Weapon)
+					attacks.add((Weapon)toTake);
 				if(shouldPrint)
 					Main.game.getView().println("Taken.");
 				room.remove(toTake);
@@ -115,8 +119,8 @@ public class Player extends TACharacter {
 					numAdded++;
 					Main.game.getView().println(obj.getFullNameWithCapitalizedArticle()+": taken");
 					added.add(obj);
-					if(obj instanceof Attack)
-						attacks.add((Attack)obj);
+					if(obj instanceof Weapon)
+						attacks.add((Weapon)obj);
 				}
 			}
 			for(TAObject obj:added)
@@ -147,8 +151,8 @@ public class Player extends TACharacter {
 			return true;
 		}
 		if(inventory.remove(toDrop)) {
-			if(toDrop instanceof Attack)
-				attacks.remove((Attack)toDrop);
+			if(toDrop instanceof Weapon)
+				attacks.remove((Weapon)toDrop);
 			if(shouldPrint)
 				Main.game.getView().println("Dropped.");
 			room.add(toDrop);
@@ -198,8 +202,8 @@ public class Player extends TACharacter {
 			TAObject obj=iter.next();
 			if(obj.getName().equalsIgnoreCase(item)) {
 				iter.remove();
-				if(obj instanceof Attack)
-					attacks.remove((Attack)obj);
+				if(obj instanceof Weapon)
+					attacks.remove((Weapon)obj);
 				return true;
 			}
 		}
@@ -220,6 +224,7 @@ public class Player extends TACharacter {
 			return null;
 		}
 		setRoom(newRoom);
+		restoreHealth((int)(getMaxHP()*0.1));
 		if(room.isVisited())
 			Main.game.getView().println(room.getShortText());
 		else {
@@ -278,6 +283,8 @@ public class Player extends TACharacter {
 			if(i.getName().equals("backpack"))
 				continue;
 			text+="\n    "+i.getFullNameWithCapitalizedArticle();
+			if(i.equals(armor))
+				text+=" (being worn)";
 		}
 		return text;
 	}
@@ -312,5 +319,33 @@ public class Player extends TACharacter {
 	
 	public List<String> getObjectives() {
 		return objectives;
+	}
+	
+	public void setHP(int newHP) {
+		super.setHP(newHP);
+		Main.game.getView().updateStatsText();
+	}
+
+	public void setStrength(int newStrength) {
+		super.setStrength(newStrength);
+		Main.game.getView().updateStatsText();
+	}
+
+
+	public void setIntelligence(int newIntelligence) {
+		super.setIntelligence(newIntelligence);
+		Main.game.getView().updateStatsText();
+	}
+
+
+	public void setSpeed(int newSpeed) {
+		super.setSpeed(newSpeed);
+		Main.game.getView().updateStatsText();
+	}
+
+
+	public void setArmor(Armor newArmor) {
+		super.setArmor(newArmor);
+		Main.game.getView().updateStatsText();
 	}
 }

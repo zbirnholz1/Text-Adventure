@@ -27,8 +27,9 @@ climb: scale, ascend:
 eat: consume, devour, swallow: 
 destroy: smash, break, shatter, obliterate, demolish, bash, break down: 
 search: look in, rummage: 
-enter: go in, go into, go through, move into, move through, travel into, travel through: 
-wear: put on, equip, don: 
+enter: go in, go into, go through, move into, move through, travel into, travel through: *
+equip: put on, wear, don: 
+unequip: take off: 
 light: : 
 extinguish: put out: 
 cut: slice, sever: 

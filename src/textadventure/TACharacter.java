@@ -4,7 +4,7 @@ import org.json.*;
 
 public abstract class TACharacter extends TAObject {
 	protected Set<TAObject> inventory;
-	protected Set<Attack> attacks;
+	protected Set<Weapon> attacks;
 	protected List<TACharacter> followingCharacters;
 	protected List<String> followingCharacterNames;
 	/*protected List<TACharacter> hostileCharacters;
@@ -25,7 +25,7 @@ public abstract class TACharacter extends TAObject {
 		followingCharacterNames=new LinkedList<String>();
 		/*hostileCharacters=new LinkedList<TACharacter>();
 		hostileCharacterNames=new LinkedList<String>();*/
-		attacks=new TreeSet<Attack>();
+		attacks=new TreeSet<Weapon>();
 	}
 
 	public TACharacter(JSONObject source) {
@@ -66,11 +66,11 @@ public abstract class TACharacter extends TAObject {
 				proximity=source.getInt("proximity");
 			else
 				proximity=0;
-			attacks=new TreeSet<Attack>();
+			attacks=new TreeSet<Weapon>();
 			if(source.has("weapons")) {
-				JSONArray JSONAttacks=source.getJSONArray("weapons");
-				for(int i=0; i<JSONAttacks.length(); i++) {
-					Weapon w=new Weapon(JSONAttacks.getJSONObject(i));
+				JSONArray JSONWeapons=source.getJSONArray("weapons");
+				for(int i=0; i<JSONWeapons.length(); i++) {
+					Weapon w=new Weapon(JSONWeapons.getJSONObject(i));
 					attacks.add(w);
 					inventory.add(w);
 				}
@@ -102,12 +102,8 @@ public abstract class TACharacter extends TAObject {
 			/*for(TACharacter c:hostileCharacters)
 				obj.accumulate("hostileCharacters", c.getName());*/
 			obj.put("proximity", proximity);
-			for(Attack a:attacks) {
-				if(a instanceof Weapon)
-					obj.accumulate("weapons", a.toJSONObject());
-				else if(a instanceof Spell)
-					obj.accumulate("spells", a.toJSONObject());
-			}
+			for(Weapon w:attacks)
+				obj.accumulate("weapons", w.toJSONObject());
 			//TODO stats, money, etc.
 		} catch(JSONException e){Main.game.getView().println("Something went wrong: "+e);}
 		return obj;
@@ -202,7 +198,7 @@ public abstract class TACharacter extends TAObject {
 		for(TACharacter c:followingCharacters)
 			c.setRoom(room);
 	}
-	
+
 	public String getFullName() {
 		if(name.length()==0)
 			return "traveler";
@@ -235,54 +231,66 @@ public abstract class TACharacter extends TAObject {
 	public List<String> getHostileCharacterNames() {
 		return hostileCharacterNames;
 	}*/
-	
+
 	public abstract void attack(TACharacter defender); //only called if it's the player or isHostile()==true
-	
+
 	public void setProximity(int newProximity) {
 		proximity=newProximity;
 	}
-	
+
 	public int getProximity() {
 		return proximity;
 	}
-	
+
 	public int getHP() {
 		return HP;
 	}
-	
+
 	public void setHP(int newHP) {
 		HP=newHP;
 	}
 	
+	public int getMaxHP() {
+		return strength*10;
+	}
+
 	public int getStrength() {
 		return strength;
 	}
-	
+
 	public void setStrength(int newStrength) {
 		strength=newStrength;
 	}
-	
+
 	public int getIntelligence() {
 		return intelligence;
 	}
-	
+
 	public void setIntelligence(int newIntelligence) {
 		intelligence=newIntelligence;
 	}
-	
+
 	public int getSpeed() {
 		return speed;
 	}
-	
+
 	public void setSpeed(int newSpeed) {
 		speed=newSpeed;
 	}
-	
+
 	public Armor getArmor() {
 		return armor;
 	}
-	
+
 	public void setArmor(Armor newArmor) {
 		armor=newArmor;
+	}
+	
+	public void takeDamage(int amount) {
+		setHP(Math.max(0, getHP()-amount));
+	}
+	
+	public void restoreHealth(int amount) {
+		setHP(Math.min(getMaxHP(), HP+amount));
 	}
 }

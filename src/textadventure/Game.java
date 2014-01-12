@@ -75,6 +75,7 @@ public class Game {
 				}
 				else {
 					view.println("\n\n\nWelcome to Text Adventure! Regardless of whether you're a seasoned veteran of text adventures or a new player, it is recommended that you type \"help\" for the basics of how to play. Have fun, and thanks for playing!^\n");
+					view.updateStatsText();
 					start();
 					view.setGameListener(null);
 				}
@@ -439,6 +440,31 @@ public class Game {
 		}
 	}
 	
+	public void enter() {
+		int direction=-1;
+		for(int i=0; i<6; i++) {
+			Room room=player.getRoom().getAdjacent(i);
+			if(room!=null&&(room.getName().equalsIgnoreCase(parser.getObjectName())||room.alsoKnownAs(parser.getObjectName()))) {
+				if(direction==-1)
+					direction=i;
+				else {
+					view.println("That was a little too vague. Please specify which direction you want to go.");
+					return;
+				}
+			}
+		}
+		
+		if(direction==-1) {
+			String toPrint="There isn't a";
+			if("aeiou".contains(parser.getObjectName()))
+				toPrint+="n";
+			toPrint+=" "+parser.getObjectName()+" here to enter.";
+			view.println(toPrint);
+		}
+		else
+			go(direction);
+	}
+	
 	public void sound() {
 		soundPlayer.setSoundIsOn(!soundPlayer.soundIsOn());
 		if(soundPlayer.soundIsOn())
@@ -662,7 +688,7 @@ public class Game {
 				look();
 				view.println();
 				inventory();
-				if(soundPlayer.soundIsOn()&&soundPlayer.getCurrentSoundName()!=null)
+				if(soundPlayer.soundIsOn()&&soundPlayer.getCurrentSoundName()!=null&&!soundPlayer.getCurrentSoundName().equals(""))
 					soundPlayer.loop(soundPlayer.getCurrentSoundName(), SoundPlayer.OFFSETS.get(soundPlayer.getCurrentSoundName()));
 			} catch(Exception e) {
 				view.println("There was a problem loading your game: "+e);

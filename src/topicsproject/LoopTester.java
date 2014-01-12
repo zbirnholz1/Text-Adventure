@@ -19,10 +19,10 @@ public class LoopTester {
 	public static final SoundPlayer s=new SoundPlayer();
 
 	public static void main(String[] args) throws Exception {
-		File soundFile = new File("hobbitMission.wav");
+		File soundFile = new File("sad.wav");
 		AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 		final Clip clip=AudioSystem.getClip();
-		LoopLineListener lineListener=new LoopLineListener("hobbitMission.mp3");
+		LoopLineListener lineListener=new LoopLineListener("sad.mp3");
 		clip.addLineListener(lineListener);
 		JFrame f=new JFrame("Loop Tester");
 		JButton button=new JButton("End Intro");
