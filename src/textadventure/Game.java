@@ -51,7 +51,8 @@ public class Game {
 	public void play() {
 		view.print("Text Adventure (will change to real name later)\n" +
 					 "Story by Zachary Birnholz and Jonathan Burns\n" +
-					 "Programmed by Zachary Birnholz\n" +
+					 "Programmed by Zachary Birnholz\n" + 
+					 "Battle system designed by Daniel Palumbo\n" +
 					 "Music credits TBD\n" +
 					 "\nWould you like to load a saved game (yes or no)? ");
 		player.setRoom(block.getFirstRoom());
@@ -86,8 +87,8 @@ public class Game {
 	public void start() {
 		//player.setRoom(block.getFirstRoom());
 		view.println("    You: \"Yes... there it is, just across the pasture!\"\n\n" +
-				"    (You: I'm visiting my former master who taught me everything I know about chartography. I was his apprentice until last year, when I went off to do my own work. " +
-				"Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I thought, and I've walked all the way from the last town.)^\n");
+				"    (You: I'm visiting my former master who taught me everything I know about cartography. I was his apprentice until last year, when I went off to do my own work. "
+				+ "Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I remembered… and I've walked all the way from the last town!)^\n");
 		view.println(player.getRoom().getFullText());
 		player.getRoom().setIsVisited(true);
 		view.println();

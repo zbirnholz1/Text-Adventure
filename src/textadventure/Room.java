@@ -62,46 +62,46 @@ public class Room extends TAObject {
 		toPrint="{\"name\":\""+n+"\","+toPrint.substring(0,toPrint.indexOf("\"name"))+toPrint.substring(toPrint.indexOf("\"ID"));
 		System.out.println(toPrint);
 	}
-	
+
 	public static void main(String[] args) {
-		 Room roadM16=new Room("Road", "A large road stretching from north to south. The tree with the secret passageway is to the east and a vineyard is to the west.", 19, 17, 15, 28, -1, -1, true, false,16);
-	     Room roadMS17=new Room("Road", "A large road stretching from north to south. There are some hills in the east and a vineyard to the west.", 16, 18, 22, 27, -1, -1, true, false,17);
-	     Room roadS18=new Room("Road", "A large road stretching from north to south. There are some hills in the east.", 17, 18, 23, -1, -1, -1, true, false,18);
-	     Room roadMN19=new Room("Road", "A large road stretching from north to south. There are some hills in the east and a vineyard to the west.", 26, 16, 20, 29, -1, -1, true, false,19);
-	     Room hillsN20=new Room("Hills", "A hilly area that extends to the south. The road is to the west.", -1, 21, -1, 19, -1, -1, true, false,20);
-	     Room hillsMN21=new Room("Hills", "A hilly area that runs from north to south. The road is to the west.", 20, 22, -1, 16, -1, -1, true, false,21);
-	     Room hillsMS22=new Room("Hills", "A hilly area that runs from north to south. The road is to the west. The remains of an avalanche cover a hill in the east.", 21, 23, 24, 17, -1, -1, true, false,22);
-	     Room hillsS23=new Room("Hills", "A hilly area that runs from north to south. The road is to the west.", 22, 23, -1, 18, -1, -1, true, false,23);
-	    //make sure to change the description for outsideMine24 once magic is added
-	     Room outsideMine24=new Room("Avalanche Site", "A large hill strewn with rocks and boulders from an avalanche. The rocks make the hill impassable.", -1, -1, -1, 22, -1, -1, false, true,24);
-	     Room roadN25=new Room("Road", "The north part of the road at the edge of Anca Canyon. It looks like the bridge across the canyon has been burned down.", 26, 19, -1, 30, -1, -1, true, false,25);
-	     Room bridge26=new Room("Bridge", "The edge of Anca Canyon. The bridge across the canyon looks like it has been burnt down. There is no other way of crossing.", -1, 25, -1, 30, -1, -1, false, true,26);
-	     Room vineyardSE27=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 28, 27, 17, 31, -1, -1, true, false,27);
-	     Room vineyardMSE28=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 29, 27, 16, 32, -1, -1, true, false,28);
-	     Room vineyardMNE29=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the northwest.", 30, 28, 19, 33, -1, -1, true, false,29);
-	     Room vineyardNE30=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the west.", -1, 29, 25, 38, -1, -1, false, false,30);
-	     Room vineyardSM31=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 32, 31, 27, 34, -1, -1, true, false,31);
-	     Room vineyardMM32=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 33, 31, 28, 35, -1, -1, true, false,32);
-	     Room vineyardNM33=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. A few small huts make up a village directly to the north.", 38, 32, 29, 36, -1, -1, true, false,33);
-	     Room vineyardSW34=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north. The vines end west of here.", 35, 34, 31, 45, -1, -1, true, false,34);
-	     Room vineyardMSW35=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north. The vines end west of here.", 36, 34, 32, 45, -1, -1, true, false,35);
-	     Room vineyardMNW36=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the northeast. The vines end west of here.", 37, 35, 33, 45, -1, -1, true, false,36);
-	     Room vineyardNW37=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the east.", -1, 36, 38, 44, -1, -1, false, false,37);
-	     Room vineyardVillage38=new Room("Village", "A small village with a few huts. There is a fighting dojo at the east end a larger round hut in the north. The doors to all the huts except for the dojo appear to be locked.", -1, 33, 40, -1, -1, -1, false, true,38);
-	     Room vineyardVillageHut39=new Room("Hut", "A tiny hut with only a table, chairs, and a stove inside.", -1, -1, 38, -1, -1, -1, false, false,39);
-	     Room vineyardVillageDojo40=new Room("Dojo", "A fighting dojo with many boards and staffs for training.", -1, -1, -1, 38, -1, -1, true, false,40);
-	     Room vineyardVillageElderHut41=new Room("Village Elder's Hut", "A rather large hut decorated with several scrolls filled with ancient sayings and a few plants. A door opens to a balcony on the north wall.", 42, 38, -1, -1, -1, -1, false, false,41);
-	     Room vineyardVillageElderBalcony42=new Room("Balcony", "A platform overlooking the vast Anca Canyon. It has a fabulous view, and you can see a river flowing at the bottom of the canyon coming from the snow in the mountains.", -1, 41, -1, -1, -1, 43, true, false,42);
-	     Room ancaCanyonVillageElderLadder43=new Room("Ladder", "You are on a ladder halfway down the side of Anca Canyon. There is a river below.", -1, -1, -1, -1, 42, 47, true, false,43);
-	     Room vineyardFoothills44=new Room("Foothills", "The ground begins to slope upward towards the icy mountains, leaving the vineyard behind in the east. There is a temple to the south.", -1, 45, 37, -1, -1, -1, true, true,44);
-	     Room vineyardTempleDoor45=new Room("Temple Door", "The outside of a circular temple that is surrounded by cryptic pillars. The mountains loom menacingly in the west.", 44, -1, 35, -1, -1, -1, false, true,45);
-	     Room vineyardTemple46 = new Room("Temple", "The main room of the temple. It is round and contains several statues of different gods. There are other rooms in the temple, but they are only for the monks.", -1, -1, 45, -1, -1, -1, false, true,46);
-	     Room ancaCanyonM47=new Room("Anca Canyon", "A canyon that continues to the east and gets slightly narrower in the west. A river flows eastward under your feet. A ladder on the rock face ascends to the Village Elder's hut.", -1, -1, 48, 50, 43, -1, true, false,47);
-	     Room ancaCanyonME48=new Room("Anca Canyon", "A canyon that continues to the east and west. A river flows eastward under your feet. It looks like the workmen are repairing the bridge directly above you.", -1, -1, 49, 47, -1, -1, true, false,48);
-	     Room ancaCanyonE49=new Room("Anca Canyon", "A canyon that continues to the east and west. A river flows eastward under your feet.", -1, -1, 49, 48, -1, -1, false, false,49);
-	     Room ancaCanyonMNW50=new Room("Anca Canyon", "A relatively narrow part of the canyon. The canyon continues to the east and takes a sharp turn to the south. The river falls down from a ledge above you in the south.", -1, -1, 47, -1, -1, -1, false, true,50);
-	     Room ancaCanyonMSW51=new Room("Anca Canyon", "You are at the top of the waterfall which goes down the ledge in the north. The canyon continues to the west.", 50, -1, -1, 52, -1, -1, false, false,51);
-	     Room ancaCanyonW52=new Room("Anca Canyon", "Anca Canyon abruptly ends at a rock wall in the west with a towering dwarf carved into it. The river emerges from the mouth of a tunnel beneath the dwarf.", -1, -1, 51, 53, -1, -1, true, false,52);
+		Room roadM16=new Room("Road", "A large road stretching from north to south. The tree with the secret passageway is to the east and a vineyard is to the west.", 19, 17, 15, 28, -1, -1, true, false,16);
+		Room roadMS17=new Room("Road", "A large road stretching from north to south. There are some hills in the east and a vineyard to the west.", 16, 18, 22, 27, -1, -1, true, false,17);
+		Room roadS18=new Room("Road", "A large road stretching from north to south. There are some hills in the east.", 17, 18, 23, -1, -1, -1, true, false,18);
+		Room roadMN19=new Room("Road", "A large road stretching from north to south. There are some hills in the east and a vineyard to the west.", 26, 16, 20, 29, -1, -1, true, false,19);
+		Room hillsN20=new Room("Hills", "A hilly area that extends to the south. The road is to the west.", -1, 21, -1, 19, -1, -1, true, false,20);
+		Room hillsMN21=new Room("Hills", "A hilly area that runs from north to south. The road is to the west.", 20, 22, -1, 16, -1, -1, true, false,21);
+		Room hillsMS22=new Room("Hills", "A hilly area that runs from north to south. The road is to the west. The remains of an avalanche cover a hill in the east.", 21, 23, 24, 17, -1, -1, true, false,22);
+		Room hillsS23=new Room("Hills", "A hilly area that runs from north to south. The road is to the west.", 22, 23, -1, 18, -1, -1, true, false,23);
+		//make sure to change the description for outsideMine24 once magic is added
+		Room outsideMine24=new Room("Avalanche Site", "A large hill strewn with rocks and boulders from an avalanche. The rocks make the hill impassable.", -1, -1, -1, 22, -1, -1, false, true,24);
+		Room roadN25=new Room("Road", "The north part of the road at the edge of Anca Canyon. It looks like the bridge across the canyon has been burned down.", 26, 19, -1, 30, -1, -1, true, false,25);
+		Room bridge26=new Room("Bridge", "The edge of Anca Canyon. The bridge across the canyon looks like it has been burnt down. There is no other way of crossing.", -1, 25, -1, 30, -1, -1, false, true,26);
+		Room vineyardSE27=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 28, 27, 17, 31, -1, -1, true, false,27);
+		Room vineyardMSE28=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 29, 27, 16, 32, -1, -1, true, false,28);
+		Room vineyardMNE29=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the northwest.", 30, 28, 19, 33, -1, -1, true, false,29);
+		Room vineyardNE30=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the west.", -1, 29, 25, 38, -1, -1, false, false,30);
+		Room vineyardSM31=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 32, 31, 27, 34, -1, -1, true, false,31);
+		Room vineyardMM32=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north.", 33, 31, 28, 35, -1, -1, true, false,32);
+		Room vineyardNM33=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. A few small huts make up a village directly to the north.", 38, 32, 29, 36, -1, -1, true, false,33);
+		Room vineyardSW34=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north. The vines end west of here.", 35, 34, 31, 45, -1, -1, true, false,34);
+		Room vineyardMSW35=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village farther to the north. The vines end west of here.", 36, 34, 32, 45, -1, -1, true, false,35);
+		Room vineyardMNW36=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the northeast. The vines end west of here.", 37, 35, 33, 45, -1, -1, true, false,36);
+		Room vineyardNW37=new Room("Vineyard", "A huge vineyard with seemingly endless rows of grape vines. You can see a small village in the east.", -1, 36, 38, 44, -1, -1, false, false,37);
+		Room vineyardVillage38=new Room("Village", "A small village with a few huts. There is a fighting dojo at the east end a larger round hut in the north. The doors to all the huts except for the dojo appear to be locked.", -1, 33, 40, -1, -1, -1, false, true,38);
+		Room vineyardVillageHut39=new Room("Hut", "A tiny hut with only a table, chairs, and a stove inside.", -1, -1, 38, -1, -1, -1, false, false,39);
+		Room vineyardVillageDojo40=new Room("Dojo", "A fighting dojo with many boards and staffs for training.", -1, -1, -1, 38, -1, -1, true, false,40);
+		Room vineyardVillageElderHut41=new Room("Village Elder's Hut", "A rather large hut decorated with several scrolls filled with ancient sayings and a few plants. A door opens to a balcony on the north wall.", 42, 38, -1, -1, -1, -1, false, false,41);
+		Room vineyardVillageElderBalcony42=new Room("Balcony", "A platform overlooking the vast Anca Canyon. It has a fabulous view, and you can see a river flowing at the bottom of the canyon coming from the snow in the mountains.", -1, 41, -1, -1, -1, 43, true, false,42);
+		Room ancaCanyonVillageElderLadder43=new Room("Ladder", "You are on a ladder halfway down the side of Anca Canyon. There is a river below.", -1, -1, -1, -1, 42, 47, true, false,43);
+		Room vineyardFoothills44=new Room("Foothills", "The ground begins to slope upward towards the icy mountains, leaving the vineyard behind in the east. There is a temple to the south.", -1, 45, 37, -1, -1, -1, true, true,44);
+		Room vineyardTempleDoor45=new Room("Temple Door", "The outside of a circular temple that is surrounded by cryptic pillars. The mountains loom menacingly in the west.", 44, -1, 35, -1, -1, -1, false, true,45);
+		Room vineyardTemple46 = new Room("Temple", "The main room of the temple. It is round and contains several statues of different gods. There are other rooms in the temple, but they are only for the monks.", -1, -1, 45, -1, -1, -1, false, true,46);
+		Room ancaCanyonM47=new Room("Anca Canyon", "A canyon that continues to the east and gets slightly narrower in the west. A river flows eastward under your feet. A ladder on the rock face ascends to the Village Elder's hut.", -1, -1, 48, 50, 43, -1, true, false,47);
+		Room ancaCanyonME48=new Room("Anca Canyon", "A canyon that continues to the east and west. A river flows eastward under your feet. It looks like the workmen are repairing the bridge directly above you.", -1, -1, 49, 47, -1, -1, true, false,48);
+		Room ancaCanyonE49=new Room("Anca Canyon", "A canyon that continues to the east and west. A river flows eastward under your feet.", -1, -1, 49, 48, -1, -1, false, false,49);
+		Room ancaCanyonMNW50=new Room("Anca Canyon", "A relatively narrow part of the canyon. The canyon continues to the east and takes a sharp turn to the south. The river falls down from a ledge above you in the south.", -1, -1, 47, -1, -1, -1, false, true,50);
+		Room ancaCanyonMSW51=new Room("Anca Canyon", "You are at the top of the waterfall which goes down the ledge in the north. The canyon continues to the west.", 50, -1, -1, 52, -1, -1, false, false,51);
+		Room ancaCanyonW52=new Room("Anca Canyon", "Anca Canyon abruptly ends at a rock wall in the west with a towering dwarf carved into it. The river emerges from the mouth of a tunnel beneath the dwarf.", -1, -1, 51, 53, -1, -1, true, false,52);
 	}
 
 	public Room() {
@@ -140,8 +140,19 @@ public class Room extends TAObject {
 			}
 			obj.put("adjacentIDs", JSONAdjacentIDs);
 			JSONArray JSONStaticObjects=new JSONArray();
-			for(StaticObject s:staticObjects)
-				JSONStaticObjects.put(s.toJSONObject());
+			JSONArray JSONWeapons=new JSONArray();
+			JSONArray JSONArmor=new JSONArray();
+			for(StaticObject s:staticObjects) {
+				if(s instanceof Armor)
+					JSONArmor.put(s.toJSONObject());
+				else if(s instanceof Weapon)
+					JSONWeapons.put(s.toJSONObject());
+				else
+					JSONStaticObjects.put(s.toJSONObject());
+			}
+			obj.put("staticObjects", JSONStaticObjects);
+			obj.put("weapons", JSONWeapons);
+			obj.put("armor", JSONArmor);
 			if(verbEffects!=null) {
 				for(String str:verbEffects.keySet()) {
 					JSONArray JSONVerbEffectPair=new JSONArray();
@@ -150,7 +161,6 @@ public class Room extends TAObject {
 					obj.accumulate("verbEffects", JSONVerbEffectPair);
 				}
 			}
-			obj.put("staticObjects", JSONStaticObjects);
 			JSONArray JSONDynamicObjects=new JSONArray();
 			for(DynamicObject d:dynamicObjects)
 				JSONDynamicObjects.put(d.toJSONObject());
@@ -392,8 +402,8 @@ public class Room extends TAObject {
 	public Set<TAObject> getContents() {
 		//Set<TAObject> fullContents=contents;
 		//for(Chest c:chests)
-			//if(c.isOpen())
-				//fullContents.addAll(c.getContents());
+		//if(c.isOpen())
+		//fullContents.addAll(c.getContents());
 		return contents;
 	}
 
@@ -417,7 +427,7 @@ public class Room extends TAObject {
 
 		}
 		for(TACharacter c:characters)
-			if(!c.equals(Main.game.getPlayer())&&!Main.game.getPlayer().getFollowingCharacters().contains(c))
+			if(!c.equals(Main.game.getPlayer())&&c.isVisible()&&c.isPrinted()&&!Main.game.getPlayer().getFollowingCharacters().contains(c))
 				text+="\nThe "+c.getFullName()+" is standing here.";
 		return text;
 	}
@@ -498,7 +508,7 @@ public class Room extends TAObject {
 	public Map<String, String> getVerbEffects() {
 		return verbEffects;
 	}
-	
+
 	public String getSoundName() {
 		return soundName;
 	}
@@ -541,7 +551,7 @@ public class Room extends TAObject {
 	public void setDarkMessage(String m) {
 		darkMessage=m;
 	}
-	
+
 	public void setSoundName(String s) {
 		soundName=s;
 	}

@@ -1,9 +1,15 @@
 package textadventure;
 
-public class Armor extends TAObject {
+import org.json.*;
+
+public class Armor extends StaticObject {
 	private int weight, rating;
 	private Material material;
 	private Structure structure;
+	
+	public Armor(JSONObject source) {
+		//TODO
+	}
 
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
 		if(verb.equals("wear")&&thisIsDO)

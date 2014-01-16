@@ -10,8 +10,8 @@ public class RoomBlock {
 	private int blockNumber;
 
 	public static final Map<Integer, Integer> blockLocations=initializeBlockLocations(); //contains Room IDs (switch to actual Rooms?) that
-														//point to the numbers of the blocks they begin
-														//will initialize this when the game begins
+	//point to the numbers of the blocks they begin
+	//will initialize this when the game begins
 	//RoomBlock files are formatted:
 	//minID
 	//maxID
@@ -96,11 +96,27 @@ public class RoomBlock {
 						IDs.add(null);
 				}
 				adjacentIDs.put(new Integer(room.getID()), IDs);
-				try { //put all the items into the Room
-					JSONArray JSONStaticObjects=source.getJSONArray("staticObjects");
-					for(int i=0; i<JSONStaticObjects.length(); i++)
-						room.add(new StaticObject(JSONStaticObjects.getJSONObject(i)));
-				} catch(JSONException ex){Main.game.getView().println("Something went wrong: "+ex);}
+				if(source.has("staticObjects")) {
+					try { //put all the items into the Room
+						JSONArray JSONStaticObjects=source.getJSONArray("staticObjects");
+						for(int i=0; i<JSONStaticObjects.length(); i++)
+							room.add(new StaticObject(JSONStaticObjects.getJSONObject(i)));
+					} catch(JSONException ex){Main.game.getView().println("Something went wrong: "+ex);}
+				}
+				if(source.has("weapons")) {
+					try { //put all the Weapons into the Room
+						JSONArray JSONWeapons=source.getJSONArray("weapons");
+						for(int i=0; i<JSONWeapons.length(); i++)
+							room.add(new Weapon(JSONWeapons.getJSONObject(i)));
+					} catch(JSONException ex){Main.game.getView().println("Something went wrong: "+ex);}
+				}
+				if(source.has("armor")) {
+					try { //put all the Weapons into the Room
+						JSONArray JSONArmor=source.getJSONArray("armor");
+						for(int i=0; i<JSONArmor.length(); i++)
+							room.add(new Armor(JSONArmor.getJSONObject(i)));
+					} catch(JSONException ex){Main.game.getView().println("Something went wrong: "+ex);}
+				}
 				if(source.has("dynamicObjects")) {
 					try { //put all the DynamicObjects into the Room
 						JSONArray JSONDynamicObjects=source.getJSONArray("dynamicObjects");

@@ -23,7 +23,7 @@ public class View extends JFrame {
 		super("Text Adventure");
 		exitListener = new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if(JOptionPane.showConfirmDialog(View.this, "Your game is still active.\nAre you sure you want to quit?\nYour unsaved progress will be lost.", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE)==JOptionPane.YES_OPTION)
+				if(JOptionPane.showConfirmDialog(View.this, "Your game is still active.\nAre you sure you want to quit?\nAny unsaved progress will be lost.", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE)==JOptionPane.YES_OPTION)
 					Main.game.quit(false);
 			}
 		};
@@ -97,7 +97,7 @@ public class View extends JFrame {
 		scrollPane.setBorder(null);
 		add(scrollPane, BorderLayout.CENTER);
 		setSize(625, 425);
-		setMinimumSize(new Dimension(575, 375));
+		setMinimumSize(getSize());
 		setLocation(30, 30);
 		setVisible(true);
 		textArea.requestFocusInWindow();
