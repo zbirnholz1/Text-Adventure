@@ -4,7 +4,7 @@ import org.json.*;
 
 public abstract class TACharacter extends TAObject {
 	protected Set<TAObject> inventory;
-	protected Set<Weapon> attacks;
+	//protected Set<Weapon> attacks;
 	protected List<TACharacter> followingCharacters;
 	protected List<String> followingCharacterNames;
 	/*protected List<TACharacter> hostileCharacters;
@@ -25,7 +25,7 @@ public abstract class TACharacter extends TAObject {
 		followingCharacterNames=new LinkedList<String>();
 		/*hostileCharacters=new LinkedList<TACharacter>();
 		hostileCharacterNames=new LinkedList<String>();*/
-		attacks=new TreeSet<Weapon>();
+		//attacks=new TreeSet<Weapon>();
 	}
 
 	public TACharacter(JSONObject source) {
@@ -47,6 +47,11 @@ public abstract class TACharacter extends TAObject {
 				for(int i=0; i<JSONChests.length(); i++)
 					inventory.add(new Chest(JSONChests.getJSONObject(i)));
 			}
+			if(source.has("weapons")) {
+				JSONArray JSONWeapons=source.getJSONArray("weapons");
+				for(int i=0; i<JSONWeapons.length(); i++)
+					inventory.add(new Weapon(JSONWeapons.getJSONObject(i)));
+			}
 			followingCharacters=new LinkedList<TACharacter>();
 			followingCharacterNames=new LinkedList<String>();
 			if(source.has("followingCharacters")) {
@@ -66,12 +71,12 @@ public abstract class TACharacter extends TAObject {
 				proximity=source.getInt("proximity");
 			else
 				proximity=0;
-			attacks=new TreeSet<Weapon>();
+			//attacks=new TreeSet<Weapon>();
 			if(source.has("weapons")) {
 				JSONArray JSONWeapons=source.getJSONArray("weapons");
 				for(int i=0; i<JSONWeapons.length(); i++) {
 					Weapon w=new Weapon(JSONWeapons.getJSONObject(i));
-					attacks.add(w);
+					//attacks.add(w);
 					inventory.add(w);
 				}
 			}
@@ -86,6 +91,7 @@ public abstract class TACharacter extends TAObject {
 			JSONArray JSONStaticObjects=new JSONArray();
 			JSONArray JSONDynamicObjects=new JSONArray();
 			JSONArray JSONChests=new JSONArray();
+			JSONArray JSONWeapons=new JSONArray();
 			for(TAObject o:inventory) {
 				if(o instanceof StaticObject)
 					JSONStaticObjects.put(o.toJSONObject());
@@ -93,17 +99,20 @@ public abstract class TACharacter extends TAObject {
 					JSONDynamicObjects.put(o.toJSONObject());
 				else if(o instanceof Chest)
 					JSONChests.put(o.toJSONObject());
+				else if(o instanceof Weapon)
+					JSONWeapons.put(o.toJSONObject());
 			}
 			obj.put("staticObjects", JSONStaticObjects);
 			obj.put("dynamicObjects", JSONDynamicObjects);
 			obj.put("chests", JSONChests);
+			obj.put("weapons", JSONWeapons);
 			for(TACharacter c:followingCharacters)
 				obj.accumulate("followingCharacters", c.getName());
 			/*for(TACharacter c:hostileCharacters)
 				obj.accumulate("hostileCharacters", c.getName());*/
 			obj.put("proximity", proximity);
-			for(Weapon w:attacks)
-				obj.accumulate("weapons", w.toJSONObject());
+			/*for(Weapon w:attacks)
+				obj.accumulate("weapons", w.toJSONObject());*/
 			//TODO stats, money, etc.
 		} catch(JSONException e){Main.game.getView().println("Something went wrong: "+e);}
 		return obj;

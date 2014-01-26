@@ -9,6 +9,7 @@ import javax.swing.text.*;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 	private JTextArea textArea;
+	private JPanel leftPanel;
 	private JTextPane playerStats;
 	private int promptPosition;
 	private WindowListener exitListener;
@@ -66,7 +67,7 @@ public class View extends JFrame {
 			}
 		};
 		pressAnyKeyListener=new PressAnyKeyListener();
-		
+
 		playerStats=new JTextPane();
 		StyledDocument doc = playerStats.getStyledDocument();
 		SimpleAttributeSet center = new SimpleAttributeSet();
@@ -75,11 +76,15 @@ public class View extends JFrame {
 		playerStats.setText("About you:\n\nYou don't have\nany stats yet!\n\nPlease load a\nsaved game or\nstart a new one.");
 		playerStats.setEditable(false);
 		playerStats.setBackground(getBackground());
-		JPanel statsPanel=new JPanel();
-		statsPanel.add(playerStats);
+		playerStats.setMargin(new Insets(0, 10, 0, 10));
+		leftPanel=new JPanel(new BorderLayout());
+		leftPanel.add(playerStats, BorderLayout.CENTER);
+		leftPanel.validate();
+
+		//statsPanel.add(mapButton, BorderLayout.SOUTH);
 		//statsPanel.setBackground(textArea.getBackground().darker());
-		add(statsPanel, BorderLayout.WEST);
-		
+		add(leftPanel, BorderLayout.WEST);
+
 		textArea=new JTextArea();
 		textArea.setMargin(new Insets(10, 10, 10, 10));
 		//textArea.setFont(new Font("GillSans", Font.PLAIN, 14));
@@ -105,47 +110,47 @@ public class View extends JFrame {
 		timerQueue=new LinkedList<TypewriterTimer>();
 		printQueue=new LinkedList<String>();
 	}
-	
+
 	private class PressAnyKeyListener implements KeyListener {
-			private int numEnters=0;
-			public void keyPressed(KeyEvent event) {
-				if(!isWaitingForKeyPress||event.getKeyCode()!=KeyEvent.VK_ENTER)
-					return;
-				if(numEnters==0) { //The first one doesn't count because it's the enter
-					numEnters++;   //after their input. The next enter is the real one.
-					return;
-				}
-				/*if(event.isActionKey()||event.isShiftDown()||event.isAltDown()||event.isControlDown()||event.isMetaDown()||event.isAltGraphDown())
+		private int numEnters=0;
+		public void keyPressed(KeyEvent event) {
+			if(!isWaitingForKeyPress||event.getKeyCode()!=KeyEvent.VK_ENTER)
+				return;
+			if(numEnters==0) { //The first one doesn't count because it's the enter
+				numEnters++;   //after their input. The next enter is the real one.
+				return;
+			}
+			/*if(event.isActionKey()||event.isShiftDown()||event.isAltDown()||event.isControlDown()||event.isMetaDown()||event.isAltGraphDown())
 					isWaitingForKeyPress=false;
 				String str=textArea.getText().substring(textArea.getText().length()-"[Press enter to continue.]".length()-2);
 				if(!str.equals("[Press enter to continue.]\n\n"))
 					return;*/
-				numEnters=0;
-				textArea.getCaret().setVisible(true);
-				stopWaitingForKeyPress();
-			}
+			numEnters=0;
+			textArea.getCaret().setVisible(true);
+			stopWaitingForKeyPress();
+		}
 
-			public void keyReleased(KeyEvent event) {
-				
-			}
+		public void keyReleased(KeyEvent event) {
 
-			public void keyTyped(KeyEvent event) {
-				if(!isWaitingForKeyPress)
-					return;
-				event.consume();
-			}
-			
-			public void setNumEnters(int num) {
-				numEnters=num;
-			}
-			
+		}
+
+		public void keyTyped(KeyEvent event) {
+			if(!isWaitingForKeyPress)
+				return;
+			event.consume();
+		}
+
+		public void setNumEnters(int num) {
+			numEnters=num;
+		}
+
 	}
-	
+
 	private class TypewriterTimer extends Timer {		
 		private int charNum;
 		private String str;
 		private boolean shouldPause;
-		
+
 		public TypewriterTimer(String s, boolean p) {
 			super(25, null);
 			str=s;
@@ -157,14 +162,14 @@ public class View extends JFrame {
 			if(timerQueue.size()==1)
 				start();
 		}
-		
+
 		public void stop() {
 			super.stop();
 			timerQueue.remove();
 			if(timerQueue.peek()!=null)
 				timerQueue.peek().start();
 		}
-		
+
 		protected void fireActionPerformed(ActionEvent e) {
 			if(!shouldPause) {
 				print(str);
@@ -178,11 +183,13 @@ public class View extends JFrame {
 			print(""+str.charAt(charNum));
 			charNum++;
 		}
-		
+
 	}
 
 	public void print(String str, boolean shouldPause) {
 		if(!textArea.isEditable())
+			return;
+		if(str.equals(""))
 			return;
 		if(str.charAt(0)=='`') {
 			pressAnyKeyListener.setNumEnters(1);
@@ -203,6 +210,16 @@ public class View extends JFrame {
 			new TypewriterTimer(str, true);
 		}
 		if(!isWaitingForKeyPress) {
+			if(str.charAt(0)=='#') {
+				clearTextArea();
+				str=str.substring(1);
+			}
+			int clearIndex=str.indexOf("#");
+			if(clearIndex!=-1) {
+				print(str.substring(0, clearIndex));
+				print(str.substring(clearIndex));
+				return;
+			}
 			textArea.append(str);
 			promptPosition+=str.length();
 			textArea.setCaretPosition(promptPosition);
@@ -212,15 +229,15 @@ public class View extends JFrame {
 		if(waitIndex!=-1)
 			waitForKeyPress();
 	}
-	
+
 	public void print(Object toPrint) {
 		print(toPrint.toString());
 	}
-	
+
 	public void print(String str) {
 		print(str, false);
 	}
-	
+
 	public void println(Object toPrint) {
 		println(toPrint.toString());
 	}
@@ -232,15 +249,15 @@ public class View extends JFrame {
 	public void println() {
 		print("\n");
 	}
-	
+
 	public void printNPC(String str) {
 		printNPC(str, /*true*/false);
 	}
-	
+
 	public void printlnNPC(String str) {
 		printlnNPC(str, /*true*/false);
 	}
-	
+
 	public void printNPC(String str, boolean shouldPause) {
 		if(str.contains(": \"(")) { //then it should be printed in parentheses as an aside
 			str="("+str.replace(": \"(", ": ").replace(")\"", ")");
@@ -272,33 +289,50 @@ public class View extends JFrame {
 			firstCharOfLastToken=token.charAt(0);
 		}
 	}
-	
+
 	public void printlnNPC() {
 		println();
 	}
-	
+
 	public void printlnNPC(String str, boolean shouldPause) {
 		printNPC(str+"\n", shouldPause);
 	}
-	
+
 	public void updateStatsText() {
-		String stats="About you:\n\n"
-				    +"HP: "+Main.game.getPlayer().getHP()+"/"+Main.game.getPlayer().getMaxHP()+"\n"
-					+"Strength: "+Main.game.getPlayer().getStrength()+"\n"
-					+"Intelligence: "+Main.game.getPlayer().getIntelligence()+"\n"
-					+"Speed: "+Main.game.getPlayer().getSpeed()+"\n\n"
-					+"Armor:\n";
+		String stats=Main.game.getPlayer().getFullName()+":\n\n"
+				+"HP: "+Main.game.getPlayer().getHP()+"/"+Main.game.getPlayer().getMaxHP()+"\n"
+				+"Strength: "+Main.game.getPlayer().getStrength()+"\n"
+				+"Intelligence: "+Main.game.getPlayer().getIntelligence()+"\n"
+				+"Speed: "+Main.game.getPlayer().getSpeed()+"\n\n"
+				+"Armor:\n";
 		if(Main.game.getPlayer().getArmor()==null)
 			stats+="None equipped";
 		else {
 			stats+=Main.game.getPlayer().getArmor().getFullName()+"\n"
-				  +"("+Main.game.getPlayer().getArmor().getMaterial().toString()+", "+Main.game.getPlayer().getArmor().getStructure().toString()+")\n"
-				  +"Rating: ";
+					+"("+Main.game.getPlayer().getArmor().getMaterial().toString()+", "+Main.game.getPlayer().getArmor().getStructure().toString()+")\n"
+					+"Rating: ";
 			if(Main.game.getPlayer().getArmor().getRating()>=0)
 				stats+="+";
 			stats+=Main.game.getPlayer().getArmor().getRating();
 		}
 		playerStats.setText(stats);
+	}
+
+	public void addMapButton() {
+		JButton mapButton=new JButton("Display map");
+		mapButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				println("map\n");
+				Main.game.getCommandParser().parse("map");
+			}
+		});
+		leftPanel.add(mapButton, BorderLayout.SOUTH);
+		updateStatsText();
+	}
+
+	public void clearTextArea() {
+		promptPosition=0;
+		textArea.setText("");
 	}
 
 	public void stopResponding() {
@@ -309,18 +343,18 @@ public class View extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		removeWindowListener(exitListener);
 	}
-	
+
 	public void waitForKeyPress() {
 		//if(isWaitingForKeyPress)
-			//return;
+		//return;
 		println("\n\n[Press enter to continue.]\n");
 		textArea.getCaret().setVisible(false);
 		isWaitingForKeyPress=true;
 	}
-	
+
 	public void stopWaitingForKeyPress() {
 		//if(!isWaitingForKeyPress)
-			//return;
+		//return;
 		isWaitingForKeyPress=false;
 		while(!isWaitingForKeyPress&&!printQueue.isEmpty())
 			print(printQueue.remove());
@@ -333,7 +367,7 @@ public class View extends JFrame {
 	public GameListener getGameListener() {
 		return gameListener;
 	}
-	
+
 	public JTextArea getTextArea() {
 		return textArea;
 	}

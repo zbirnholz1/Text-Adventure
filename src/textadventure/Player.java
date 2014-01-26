@@ -87,8 +87,8 @@ public class Player extends TACharacter {
 		}
 		if(inventory.size()<INVENTORY_CAPACITY) {
 			if(inventory.add(toTake)) {
-				if(toTake instanceof Weapon)
-					attacks.add((Weapon)toTake);
+				/*if(toTake instanceof Weapon)
+					attacks.add((Weapon)toTake);*/
 				if(shouldPrint)
 					Main.game.getView().println("Taken.");
 				room.remove(toTake);
@@ -119,8 +119,8 @@ public class Player extends TACharacter {
 					numAdded++;
 					Main.game.getView().println(obj.getFullNameWithCapitalizedArticle()+": taken");
 					added.add(obj);
-					if(obj instanceof Weapon)
-						attacks.add((Weapon)obj);
+					/*if(obj instanceof Weapon)
+						attacks.add((Weapon)obj);*/
 				}
 			}
 			for(TAObject obj:added)
@@ -150,9 +150,13 @@ public class Player extends TACharacter {
 				Main.game.getView().println("You can't drop your backpack!");
 			return true;
 		}
+		if(toDrop instanceof Weapon&&((Weapon)toDrop).isASpell()) {
+			Main.game.getView().println("That's a spell you know, not an item you have.");
+			return true;
+		}
 		if(inventory.remove(toDrop)) {
-			if(toDrop instanceof Weapon)
-				attacks.remove((Weapon)toDrop);
+			/*if(toDrop instanceof Weapon)
+				attacks.remove((Weapon)toDrop);*/
 			if(shouldPrint)
 				Main.game.getView().println("Dropped.");
 			room.add(toDrop);
@@ -178,6 +182,8 @@ public class Player extends TACharacter {
 				TAObject onlyItem=iter.next();
 				if(onlyItem.getName().equals("backpack"))
 					onlyItem=iter.next();
+				if(onlyItem instanceof Weapon&&((Weapon)onlyItem).isASpell())
+					Main.game.getView().println("You have nothing to drop.");
 				if(shouldPrint)
 					Main.game.getView().println("(the "+onlyItem.getFullName()+")");
 				room.add(onlyItem);
@@ -186,6 +192,8 @@ public class Player extends TACharacter {
 			while(iter.hasNext()) {
 				TAObject obj=iter.next();
 				if(obj.getName().equals("backpack"))
+					continue;
+				else if(obj instanceof Weapon&&((Weapon)obj).isASpell())
 					continue;
 				room.add(obj);
 				iter.remove();
@@ -200,10 +208,10 @@ public class Player extends TACharacter {
 		Iterator<TAObject> iter=inventory.iterator();
 		while(iter.hasNext()) {
 			TAObject obj=iter.next();
-			if(obj.getName().equalsIgnoreCase(item)) {
+			if(obj.getName().equalsIgnoreCase(item)&&!(obj instanceof Weapon&&((Weapon)obj).isASpell())) {
 				iter.remove();
-				if(obj instanceof Weapon)
-					attacks.remove((Weapon)obj);
+				/*if(obj instanceof Weapon)
+					attacks.remove((Weapon)obj);*/
 				return true;
 			}
 		}

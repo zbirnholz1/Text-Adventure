@@ -110,7 +110,8 @@ public class CommandParser {
 		indirectObjectIsVague=false;
 		if(str.length()>0&&str.charAt(0)!='_') {
 			str=str.toLowerCase();
-			str=removeExtraCharacters(str);
+			//str=removeExtraCharacters(str);
+			//It does that^ later.
 		}
 		if(str.equals("")) {
 			Main.game.getView().println(blankResponse());
@@ -148,6 +149,10 @@ public class CommandParser {
 			lookingJustForObjectAdjective=false;
 			lookingJustForIO=false;
 			lookingJustForIOAdjective=false;
+		}
+		if(keywords.containsKey(verb)&&!keywords.get(verb).contains("\"")&&str.charAt(0)!='_') {
+			str=removeExtraCharacters(str);
+			words=str.split(" ");
 		}
 		if(lookingJustForObject) {
 			verb=lastVerb;
@@ -408,17 +413,65 @@ public class CommandParser {
 	public String getObjectName() {
 		return objectName;
 	}
+	
+	public String getObjectNameWithArticle() {
+		String toReturn=null;
+		if(objectName!=null) {
+			if("aeiou".contains(""+objectName.charAt(0)))
+				toReturn="an ";
+			else
+				toReturn="a ";
+			toReturn+=objectName;
+		}
+		return toReturn;
+	}
 
 	public String getIndirectObjectName() {
 		return indirectObjectName;
+	}
+	
+	public String getIndirectObjectNameWithArticle() {
+		String toReturn=null;
+		if(indirectObjectName!=null) {
+			if("aeiou".contains(""+indirectObjectName.charAt(0)))
+				toReturn="an ";
+			else
+				toReturn="a ";
+			toReturn+=indirectObjectName;
+		}
+		return toReturn;
 	}
 
 	public String getObjectAdjective() {
 		return objectAdjective;
 	}
+	
+	public String getObjectAdjectiveWithArticle() {
+		String toReturn=null;
+		if(objectAdjective!=null) {
+			if("aeiou".contains(""+objectAdjective.charAt(0)))
+				toReturn="an ";
+			else
+				toReturn="a ";
+			toReturn+=objectAdjective;
+		}
+		return toReturn;
+	}
 
 	public String getIndirectObjectAdjective() {
 		return indirectObjectAdjective;
+	}
+	
+	public String getIndirectObjectAdjectiveWithArticle() {
+		String toReturn=null;
+		if(indirectObjectAdjective!=null) {
+			if("aeiou".contains(""+indirectObjectAdjective.charAt(0)))
+				toReturn="an ";
+			else
+				toReturn="a ";
+			toReturn+=indirectObjectAdjective;
+		}
+		return toReturn;
 	}
 
 	public boolean isLookingJustForObject() {

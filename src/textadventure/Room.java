@@ -1,5 +1,6 @@
 package textadventure;
 import java.util.*;
+
 import org.json.*;
 
 public class Room extends TAObject {
@@ -397,7 +398,15 @@ public class Room extends TAObject {
 
 	public Set<TACharacter> getCharacters() {
 		return characters;
-	}	
+	}
+	
+	public List<TACharacter> getHostileCharacters() {
+		List<TACharacter> toReturn=new ArrayList<TACharacter>();
+		for(TACharacter t:characters)
+			if(t.getProximity()>0)
+				toReturn.add(t);
+		return toReturn;
+	}
 
 	public Set<TAObject> getContents() {
 		//Set<TAObject> fullContents=contents;

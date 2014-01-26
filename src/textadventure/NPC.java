@@ -40,10 +40,17 @@ public class NPC extends TACharacter {
 		try {
 			conversations=new ArrayList<Conversation>(conversationRooms.size());
 			BufferedReader reader=new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/npcs/"+fileName+".taf")));
-			for(int i=0; i<=nextConversationNumber&&i<conversationRooms.size(); i++)
-				conversations.add(new Conversation(new JSONObject(reader.readLine())));
+			for(int i=0; i<=nextConversationNumber&&i<conversationRooms.size(); i++) {
+				String line=reader.readLine();
+				String JSONString=line;
+				while(line!=null&&line.charAt(line.length()-1)!='}') {
+					line=reader.readLine();
+					JSONString+=line;
+				}
+				conversations.add(new Conversation(new JSONObject(JSONString)));
+			}
 			reader.close();
-		} catch(Exception e) {e.printStackTrace(System.out);Main.game.getView().println("Something went wrong: "+e);}
+		} catch(Exception e) {e.printStackTrace();Main.game.getView().println("Something went wrong: "+e);}
 	}
 
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
@@ -170,13 +177,23 @@ public class NPC extends TACharacter {
 		try {
 			//read in the next Conversation
 			BufferedReader reader=new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/npcs/"+fileName+".taf")));
-			for(int i=0; i<nextConversationNumber; i++)
-				reader.readLine();
-			String conversationLine=reader.readLine();
-			if(conversationLine!=null)
-				conversations.add(new Conversation(new JSONObject(conversationLine)));
+			int i=0;
+			String readLine;
+			while(i<nextConversationNumber) {
+				readLine=reader.readLine();
+				if(readLine.charAt(readLine.length()-1)=='}')
+					i++;
+			}
+			String line=reader.readLine();
+			String JSONString=line;
+			while(line!=null&&line.charAt(line.length()-1)!='}') {
+				line=reader.readLine();
+				JSONString+=line;
+			}
+			if(JSONString!=null)
+				conversations.add(new Conversation(new JSONObject(JSONString)));
 			reader.close();
-		} catch(Exception e) {Main.game.getView().println("Something went wrong: "+e);}
+		} catch(Exception e) {e.printStackTrace();Main.game.getView().println("Something went wrong: "+e);}
 		String effect=conversations.get(number).getEffect();
 		if(effect.equals(""))
 			return;
@@ -227,7 +244,7 @@ public class NPC extends TACharacter {
 			c.setRoom(room);
 		return null;
 	}
-	
+
 	public void attack(TACharacter defender) {
 		//TODO
 	}

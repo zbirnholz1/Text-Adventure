@@ -22,7 +22,7 @@ public class LoopTester {
 		File soundFile = new File("sad.wav");
 		AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
 		final Clip clip=AudioSystem.getClip();
-		LoopLineListener lineListener=new LoopLineListener("sad.mp3");
+		LoopLineListener lineListener=new LoopLineListener("08 Precision.mp3");
 		clip.addLineListener(lineListener);
 		JFrame f=new JFrame("Loop Tester");
 		JButton button=new JButton("End Intro");

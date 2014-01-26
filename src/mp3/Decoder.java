@@ -176,7 +176,7 @@ public class Decoder {
     	}
     }
     
-    public void loop(String name, InputStream in, int numTimes) throws IOException {
+    public void loop(String name, InputStream in, Integer numTimes) throws IOException {
     	for(int i=0; i<numTimes; i++) {
     		BufferedInputStream bin = new BufferedInputStream(in, 128 * 1024);
     		play(name, bin);
@@ -188,7 +188,7 @@ public class Decoder {
     	}
     }
     
-    public void loop(String name, InputStream in, int numTimes, long offset) throws IOException {
+    public void loop(String name, InputStream in, Integer numTimes, Long offset) throws IOException {
     	BufferedInputStream bin = new BufferedInputStream(in, 128 * 1024);
     	play(name, bin);
     	in.close();
@@ -207,7 +207,7 @@ public class Decoder {
     	}
     }
     
-    public void loop(String name, InputStream in, long offset) throws IOException {
+    public void loop(String name, InputStream in, Long offset) throws IOException {
     	BufferedInputStream bin = new BufferedInputStream(in, 128 * 1024);
     	play(name, bin);
     	//in.close();

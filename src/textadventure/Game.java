@@ -14,7 +14,7 @@ public class Game {
 	private SoundPlayer soundPlayer;
 
 	public static final String GO_DIRECTIONS="NorthSouthEast West Up   Down ";
-	
+
 	public static final String supportPath=initializeSupportPath();
 
 	public Game() {
@@ -38,7 +38,7 @@ public class Game {
 			}
 		});
 	}
-	
+
 	public static String initializeSupportPath() {
 		String home=System.getProperty("user.home");
 		String os=System.getProperty("os.name").toLowerCase();
@@ -49,12 +49,7 @@ public class Game {
 	}
 
 	public void play() {
-		view.print("Text Adventure (will change to real name later)\n" +
-					 "Story by Zachary Birnholz and Jonathan Burns\n" +
-					 "Programmed by Zachary Birnholz\n" + 
-					 "Battle system designed by Daniel Palumbo\n" +
-					 "Music credits TBD\n" +
-					 "\nWould you like to load a saved game (yes or no)? ");
+		view.print("Would you like to load a saved game (yes or no)? ");
 		player.setRoom(block.getFirstRoom());
 		view.setGameListener(new GameListener() {
 			public void textTyped(String yn) {
@@ -63,11 +58,11 @@ public class Game {
 					view.print("\n\nPlease enter the name of the saved game.\n\n>");
 					view.setGameListener(new GameListener() {
 						public void textTyped(String text) {
-							view.println("\n");
+							view.print("#");
 							Room originalRoom=player.getRoom();
 							parser.parse("load "+text);
-							view.println("\n");
 							if(player.getRoom().equals(originalRoom)) {
+								view.println("Starting a new game...\n\n");
 								start();
 							}
 							view.setGameListener(null);
@@ -75,23 +70,40 @@ public class Game {
 					});
 				}
 				else {
-					view.println("\n\n\nWelcome to Text Adventure! Regardless of whether you're a seasoned veteran of text adventures or a new player, it is recommended that you type \"help\" for the basics of how to play. Have fun, and thanks for playing!^\n");
-					view.updateStatsText();
+					view.print("#");
 					start();
-					view.setGameListener(null);
 				}
 			}
 		});
 	}
-	
+
 	public void start() {
+		view.setGameListener(null);
 		//player.setRoom(block.getFirstRoom());
-		view.println("    You: \"Yes... there it is, just across the pasture!\"\n\n" +
-				"    (You: I'm visiting my former master who taught me everything I know about cartography. I was his apprentice until last year, when I went off to do my own work. "
-				+ "Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I remembered… and I've walked all the way from the last town!)^\n");
-		view.println(player.getRoom().getFullText());
-		player.getRoom().setIsVisited(true);
-		view.println();
+		view.println("Text Adventure (will change to real name later)\n" +
+				"Story by Zachary Birnholz and Jonathan Burns\n" +
+				"Programmed by Zachary Birnholz\n" + 
+				"Battle system designed by Daniel Palumbo\n" +
+				"Music credits TBD\n");
+		view.println("Welcome to Text Adventure! Regardless of whether you're a seasoned veteran of text adventures or a new player, it is recommended that you type \"help\" for the basics of how to play once the game begins. Have fun, and thanks for playing!\n\n");
+		view.print("Please enter your name: ");
+		view.setGameListener(new GameListener() {
+			public void textTyped(String name) {
+				if(name.equals(""))
+					view.print("\n\nI didn't catch your name.\nPlease type it here: ");
+				else {
+					parser.parse("_setfield me name:"+name.toLowerCase());
+					view.setGameListener(null);
+					view.println("#    You: \"Yes... there it is, just across the pasture!\"\n\n" +
+							"    (You: I'm visiting my former master who taught me everything I know about cartography. I was his apprentice until last year, when I went off to do my own work. "
+							+ "Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I remembered… and I've walked all the way from the last town!)^");
+					view.println(player.getRoom().getFullText());
+					player.getRoom().setIsVisited(true);
+					view.println();
+					view.updateStatsText();
+				}
+			}
+		});
 	}
 
 	public void processCommand(String verb) {
@@ -184,7 +196,7 @@ public class Game {
 					parser.lookJustForObjectAdjective();
 				}
 				else
-					view.println("I don't see a "+parser.getObjectName()+" here.");
+					view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 			}
 			else if(parser.objectIsVague()&&!parser.justLookedJustForObjectAdjective()) {
 				view.println(getAdjectivePossibilities(parser.getObjectName()));
@@ -224,7 +236,10 @@ public class Game {
 			go(direction);
 		}
 		else*/
-		view.println("In what direction do you want to go?");
+		if(parser.getObject()!=null)
+			approach();
+		else
+			view.println("In what direction do you want to go?");
 		//parser.lookJustForObject() is unnecessary because the directions are already verbs
 	}
 
@@ -255,7 +270,7 @@ public class Game {
 	public void take() {
 		if(parser.getObjectName()==null) {
 			if(parser.hasMultipleWords()) {
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 			}
 			else if(player.getRoom().getNumTakeables()==1) {
 				for(TAObject obj:player.getRoom().getContents()) {
@@ -293,7 +308,7 @@ public class Game {
 					parser.lookJustForObject();
 				}
 				else
-					view.println("I don't see a "+parser.getObjectName()+" here.");
+					view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 			}
 		}
 		else if(parser.objectIsVague()&&!parser.justLookedJustForObjectAdjective()) {
@@ -310,9 +325,9 @@ public class Game {
 			if(player.has(parser.getObjectName()))
 				view.println("You already have the "+parser.getObjectName()+". Why are you trying to take it again?");
 			else if(parser.getObjectAdjective()!=null)
-				view.println("I don't see a "+parser.getObjectAdjective()+" "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectAdjectiveWithArticle()+" "+parser.getObjectName()+" here.");
 			else
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 		}
 	}
 
@@ -330,7 +345,7 @@ public class Game {
 				parser.lookJustForObject();
 			}
 			else
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 		}
 		else if(parser.objectIsVague()&&!parser.justLookedJustForObjectAdjective()) {
 			view.println(getAdjectivePossibilities(parser.getObjectName()));
@@ -366,7 +381,7 @@ public class Game {
 				parser.lookJustForObjectAdjective();
 			}
 			else if(parser.hasMultipleWords()) {
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 			}
 			else if(!parser.justLookedJustForObject()) {
 				view.println("What do you want to examine?");
@@ -374,9 +389,9 @@ public class Game {
 			}
 			else {
 				if(parser.getObjectAdjective()!=null)
-					view.println("I don't see a "+parser.getObjectAdjective()+" "+parser.getObjectName()+" here.");
+					view.println("I don't see "+parser.getObjectAdjectiveWithArticle()+" "+parser.getObjectName()+" here.");
 				else
-					view.println("I don't see a "+parser.getObjectName()+" here.");
+					view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 			}
 		}
 	}
@@ -396,7 +411,7 @@ public class Game {
 				parser.lookJustForObjectAdjective();
 			}
 			else
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 		}
 		else if(!player.has(parser.getObject()))
 			view.println("You don't have a "+parser.getObject().getFullName()+".");
@@ -410,7 +425,7 @@ public class Game {
 				parser.lookJustForObjectAdjective();
 			}
 			else
-				view.println("I don't see a "+parser.getIndirectObjectName()+" here.");
+				view.println("I don't see "+parser.getIndirectObjectNameWithArticle()+" here.");
 		}
 		else {
 			if(parser.getIndirectObject() instanceof TACharacter)
@@ -422,7 +437,7 @@ public class Game {
 
 	public void talk() { //only gets called if the NPC could not process it
 		if(parser.getObject()==null) {
-			if(!parser.justLookedJustForObject()) {
+			if(!parser.justLookedJustForObject()&&!parser.hasMultipleWords()) {
 				view.println("Whom do you want to talk to?");
 				parser.lookJustForObject();
 			}
@@ -431,7 +446,7 @@ public class Game {
 				parser.lookJustForObjectAdjective();
 			}
 			else
-				view.println("I don't see a "+parser.getObjectName()+" here.");
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
 		}
 		else {
 			if(parser.getObject() instanceof TACharacter)
@@ -440,7 +455,7 @@ public class Game {
 				view.println("Obviously you can't talk to the "+parser.getObject().getFullName()+".");
 		}
 	}
-	
+
 	public void enter() {
 		int direction=-1;
 		for(int i=0; i<6; i++) {
@@ -454,18 +469,110 @@ public class Game {
 				}
 			}
 		}
-		
 		if(direction==-1) {
-			String toPrint="There isn't a";
-			if("aeiou".contains(parser.getObjectName()))
-				toPrint+="n";
-			toPrint+=" "+parser.getObjectName()+" here to enter.";
-			view.println(toPrint);
+			if(parser.getObject()==null)
+				view.println("There isn't "+parser.getObjectNameWithArticle()+" here to enter.");
+			else if(parser.getObject() instanceof NPC)
+				view.println("I don't think so.");
+			else
+				view.println("You can't enter the "+parser.getObject().getFullName()+".");
 		}
 		else
 			go(direction);
 	}
-	
+
+	public void attack() {
+		//TODO
+	}
+
+	public void approach() {
+		if(parser.getObject()==null) {
+			if(!parser.justLookedJustForObject()) {
+				view.println("Whom do you want to approach?");
+				parser.lookJustForObject();
+			}
+			else if(parser.objectIsVague()&&!parser.justLookedJustForObjectAdjective()) {
+				view.println(getAdjectivePossibilities(parser.getObjectName()));
+				parser.lookJustForObjectAdjective();
+			}
+			else
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
+		}
+		else if(parser.getObject() instanceof TACharacter) {
+			TACharacter object=(TACharacter)parser.getObject();
+			if(object.getProximity()<=0)
+				view.println("I suppose you could move even closer to the "+parser.getObject().getFullName()+", but it would probably just make them feel uncomfortable.");
+			else if(object.getProximity()==1) {
+				view.println("The "+parser.getObject().getFullName()+" is already within arm's reach!");
+			}
+			else {
+				object.setProximity(object.getProximity()+1);
+				view.println("You move closer to the "+object.getFullName());
+				//TODO describe how close they are now
+				List<TACharacter> hostileCharacters=player.getRoom().getHostileCharacters();
+				if(!hostileCharacters.isEmpty()) {
+					String result="In doing so, you move away from:\n";
+					boolean shouldPrint=false;
+					for(int i=0; i<hostileCharacters.size(); i++) {
+						if(hostileCharacters.get(i).getProximity()<BattleCalculator.MAX_PROXIMITY) {
+							hostileCharacters.get(i).setProximity(hostileCharacters.get(i).getProximity()+1);
+							result+="    The"+hostileCharacters.get(i).getFullName()+"\n";
+							shouldPrint=true;
+						}
+					}
+					if(shouldPrint)
+						view.println(result);
+				}
+			}
+		}
+		else
+			view.println("You can see the "+parser.getObject().getFullName()+" just fine from where you are.");
+	}
+
+	public void retreat() {
+		if(parser.getObject()==null) {
+			if(!parser.justLookedJustForObject()) {
+				view.println("From whom do you want to retreat?");
+				parser.lookJustForObject();
+			}
+			else if(parser.objectIsVague()&&!parser.justLookedJustForObjectAdjective()) {
+				view.println(getAdjectivePossibilities(parser.getObjectName()));
+				parser.lookJustForObjectAdjective();
+			}
+			else
+				view.println("I don't see "+parser.getObjectNameWithArticle()+" here.");
+		}
+		else if(parser.getObject() instanceof TACharacter) {
+			TACharacter object=(TACharacter)parser.getObject();
+			if(object.getProximity()<=0)
+				view.println("Why do you want to move away from the "+parser.getObject().getFullName()+"? They won't bite!");
+			else if(object.getProximity()==BattleCalculator.MAX_PROXIMITY) {
+				view.println("There is more than enough distance between you and the "+parser.getObject().getFullName()+" (although you may disagree).");
+			}
+			else {
+				object.setProximity(object.getProximity()-1);
+				view.println("You move away from the "+object.getFullName());
+				//TODO describe how close they are now
+				List<TACharacter> hostileCharacters=player.getRoom().getHostileCharacters();
+				if(!hostileCharacters.isEmpty()) {
+					String result="In doing so, you move closer to:\n";
+					boolean shouldPrint=false;
+					for(int i=0; i<hostileCharacters.size(); i++) {
+						if(hostileCharacters.get(i).getProximity()>1) {
+							hostileCharacters.get(i).setProximity(hostileCharacters.get(i).getProximity()-1);
+							result+="    The"+hostileCharacters.get(i).getFullName()+"\n";
+							shouldPrint=true;
+						}
+					}
+					if(shouldPrint)
+						view.println(result);
+				}
+			}
+		}
+		else
+			view.println("There is no need to move away from the "+parser.getObject().getFullName()+".");
+	}
+
 	public void sound() {
 		soundPlayer.setSoundIsOn(!soundPlayer.soundIsOn());
 		if(soundPlayer.soundIsOn())
@@ -486,7 +593,7 @@ public class Game {
 		view.println("Please wait for a later version of this game to use the map. Thank you for your patience.");
 		//TODO display the map
 	}
-	
+
 	public void help() {
 		view.println("To move around in the world, just type a direction (\"north\", \"south\", \"east\", \"west\", \"up\", and \"down\" or n, s, e, w, u, d for short). " +
 				"To look around type \"look\" (l for short). To take items and carry them with you, type \"take\" and type \"drop\" to drop items from your inventory. " +
@@ -497,7 +604,7 @@ public class Game {
 				"Try out other commands and see what happens! If you are stuck, look around! \n\n" +
 				"To see this message again, just type \"help\" or \"h\".");
 	}
-	
+
 	public void think() {
 		if(player.getObjectives().isEmpty())
 			view.println("You don't have anything particular on your mind at the moment. Perhaps now's the time for a little exploring.");
@@ -567,6 +674,10 @@ public class Game {
 	}
 
 	public void save() {
+		if(!player.getRoom().getHostileCharacters().isEmpty()) {
+			view.println("You have more pressing matters on your hands right now!");
+			return;
+		}
 		if(parser.getObjectName()==null) {
 			view.println("What would you like to name your save file?");
 			parser.lookJustForObject();
@@ -798,7 +909,7 @@ public class Game {
 	public CommandParser getCommandParser() {
 		return parser;
 	}
-	
+
 	public SoundPlayer getSoundPlayer() {
 		return soundPlayer;
 	}
@@ -955,7 +1066,7 @@ public class Game {
 	public void makefriendly() {
 		((TACharacter)player.getRoom().getObject(parser.getObjectName())).becomeFriendlyTo(player);
 	}*/
-	
+
 	public void setproximity() {
 		((TACharacter)player.getRoom().getObject(parser.getObjectName())).setProximity(Integer.parseInt(parser.getIndirectObjectName()));
 	}
@@ -963,7 +1074,7 @@ public class Game {
 	public void addtoinventory() {
 		player.take(parser.getObject(), false);
 	}
-	
+
 	public void addtoconversationeffect() {
 		NPC npc=null;
 		if(parser.getLastObject() instanceof NPC)
@@ -972,28 +1083,37 @@ public class Game {
 			npc=(NPC)parser.getLastIndirectObject();
 		npc.getConversation(npc.getCurrentConversationNumber()).setEffect(npc.getConversation(npc.getCurrentConversationNumber()).getEffect()+parser.getObjectName());
 	}
-	
+
 	public void stopsound() {
 		soundPlayer.stop();
 	}
-	
+
 	public void playsound() {
 		soundPlayer.play(parser.getObjectName());
 	}
-	
+
 	public void loopsound() {
 		if(parser.getIndirectObjectName()!=null)
 			soundPlayer.loop(parser.getObjectName(), Integer.parseInt(parser.getIndirectObjectName()), SoundPlayer.OFFSETS.get(parser.getObjectName()));
 		else
 			soundPlayer.loop(parser.getObjectName(), SoundPlayer.OFFSETS.get(parser.getObjectName()));
 	}
-	
+
 	public void addobjective() {
 		player.getObjectives().add(parser.getObjectName());
 	}
-	
+
 	public void removeObjective() {
 		player.getObjectives().remove(parser.getObjectName());
+	}
+
+	public void addmapbutton() {
+		view.addMapButton();
+		System.out.println("map");
+	}
+
+	public void cleartextarea() {
+		view.clearTextArea();
 	}
 
 	public void donothing() {
