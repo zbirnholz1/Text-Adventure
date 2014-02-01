@@ -399,7 +399,7 @@ public class Room extends TAObject {
 	public Set<TACharacter> getCharacters() {
 		return characters;
 	}
-	
+
 	public List<TACharacter> getHostileCharacters() {
 		List<TACharacter> toReturn=new ArrayList<TACharacter>();
 		for(TACharacter t:characters)
@@ -407,12 +407,24 @@ public class Room extends TAObject {
 				toReturn.add(t);
 		return toReturn;
 	}
+	
+	public List<TACharacter> getCharactersBySpeed() {
+		Set<TACharacter> toReturn=new TreeSet<TACharacter>(new Comparator<TACharacter>() {
+			public int compare(TACharacter one, TACharacter two) {
+				return two.getSpeed()-one.getSpeed();
+			}
+		});
+		toReturn.addAll(getHostileCharacters());
+		if(Main.game.getPlayer().getRoom().equals(this))
+			toReturn.add(Main.game.getPlayer());
+		return new ArrayList<TACharacter>(toReturn);
+	}
 
 	public Set<TAObject> getContents() {
-		//Set<TAObject> fullContents=contents;
-		//for(Chest c:chests)
-		//if(c.isOpen())
-		//fullContents.addAll(c.getContents());
+		Set<TAObject> fullContents=contents;
+		for(Chest c:chests)
+			if(c.isOpen())
+				fullContents.addAll(c.getContents());
 		return contents;
 	}
 

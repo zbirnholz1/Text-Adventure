@@ -54,7 +54,7 @@ class LoopLineListener implements LineListener, ActionListener {
 			}
 			else {
 				((Clip)e.getSource()).close();
-				LoopTester.s.loop(loopName);
+				LoopTester.s.loop(loopName, false);
 			}
 		}
 	}

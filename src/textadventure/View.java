@@ -2,6 +2,7 @@ package textadventure;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.text.*;
@@ -9,8 +10,11 @@ import javax.swing.text.*;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 	private JTextArea textArea;
+	private JScrollPane scrollPane;
 	private JPanel leftPanel;
 	private JTextPane playerStats;
+	private JButton mapButton;
+	private JTextArea ASCIIFrame, ASCIIExitArea;
 	private int promptPosition;
 	private WindowListener exitListener;
 	private KeyListener keyListener;
@@ -73,13 +77,15 @@ public class View extends JFrame {
 		SimpleAttributeSet center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
-		playerStats.setText("About you:\n\nYou don't have\nany stats yet!\n\nPlease load a\nsaved game or\nstart a new one.");
+		resetStatsText();
 		playerStats.setEditable(false);
 		playerStats.setBackground(getBackground());
 		playerStats.setMargin(new Insets(0, 10, 0, 10));
+		playerStats.setFocusable(false);
 		leftPanel=new JPanel(new BorderLayout());
 		leftPanel.add(playerStats, BorderLayout.CENTER);
 		leftPanel.validate();
+		leftPanel.setFocusable(false);
 
 		//statsPanel.add(mapButton, BorderLayout.SOUTH);
 		//statsPanel.setBackground(textArea.getBackground().darker());
@@ -97,7 +103,7 @@ public class View extends JFrame {
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		((AbstractDocument) textArea.getDocument()).setDocumentFilter(new Filter());
-		JScrollPane scrollPane=new JScrollPane(textArea);
+		scrollPane=new JScrollPane(textArea);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBorder(null);
 		add(scrollPane, BorderLayout.CENTER);
@@ -183,7 +189,16 @@ public class View extends JFrame {
 			print(""+str.charAt(charNum));
 			charNum++;
 		}
-
+	}
+	
+	public void printASCII(String str) {
+		textArea.append(str);
+		promptPosition+=str.length();
+		textArea.setCaretPosition(promptPosition);
+	}
+	
+	public void printlnASCII(String str) {
+		printASCII(str+"\n");
 	}
 
 	public void print(String str, boolean shouldPause) {
@@ -271,11 +286,11 @@ public class View extends JFrame {
 			String token=tokenizer.nextToken();
 			if(firstCharOfLastToken=='{') {
 				if(token.equals("playerName"))
-					print(Main.game.getPlayer().getFullName(), true);
+					new TypewriterTimer(Main.game.getPlayer().getFullName(), shouldPause);
 				else if(token.contains(".mp3"))
-					Main.game.getSoundPlayer().loop(token, SoundPlayer.OFFSETS.get(token));
+					Main.game.getSoundPlayer().loop(token, SoundPlayer.OFFSETS.get(token), false);
 				else if(token.equals("stopSound"))
-					Main.game.getSoundPlayer().stop();
+					Main.game.getSoundPlayer().stop(true);
 				else { //then it must be a number
 					try {
 						Thread.sleep(Integer.parseInt(token));
@@ -309,7 +324,7 @@ public class View extends JFrame {
 			stats+="None equipped";
 		else {
 			stats+=Main.game.getPlayer().getArmor().getFullName()+"\n"
-					+"("+Main.game.getPlayer().getArmor().getMaterial().toString()+", "+Main.game.getPlayer().getArmor().getStructure().toString()+")\n"
+					+"("+Main.game.getPlayer().getArmor().getType().toString()+")\n"
 					+"Rating: ";
 			if(Main.game.getPlayer().getArmor().getRating()>=0)
 				stats+="+";
@@ -317,16 +332,31 @@ public class View extends JFrame {
 		}
 		playerStats.setText(stats);
 	}
+	
+	public void resetStatsText() {
+		playerStats.setText("About you:\n\nYou don't have\nany stats yet!\n\nPlease load a\nsaved game or\nstart a new one.");
+	}
 
 	public void addMapButton() {
-		JButton mapButton=new JButton("Display map");
+		mapButton=new JButton("Display map");
 		mapButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				println("map\n");
-				Main.game.getCommandParser().parse("map");
+				if(gameListener!=null)
+					return;
+				int oldPromptPosition=promptPosition;
+				promptPosition=0;
+				textArea.setText(textArea.getText().substring(0, oldPromptPosition)+"map");
+				promptPosition=oldPromptPosition;
+				keyListener.keyPressed(new KeyEvent(textArea, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_ENTER, '\n'));
+				textArea.requestFocusInWindow();
 			}
 		});
 		leftPanel.add(mapButton, BorderLayout.SOUTH);
+		updateStatsText();
+	}
+	
+	public void removeMapButton() {
+		leftPanel.remove(mapButton);
 		updateStatsText();
 	}
 
@@ -358,6 +388,56 @@ public class View extends JFrame {
 		isWaitingForKeyPress=false;
 		while(!isWaitingForKeyPress&&!printQueue.isEmpty())
 			print(printQueue.remove());
+	}
+	
+	public void showASCIIFrame(String ASCII, boolean enterToExit) {
+		remove(scrollPane);
+		remove(leftPanel);
+		ASCIIFrame=new JTextArea();
+		ASCIIFrame.setFont(new Font("Courier", Font.PLAIN, 12));
+		ASCIIFrame.setLineWrap(true);
+		ASCIIFrame.setWrapStyleWord(true);
+		ASCIIFrame.getCaret().setVisible(false);
+		ASCIIFrame.setForeground(Color.BLACK);
+		ASCIIFrame.setEditable(false);
+		ASCIIFrame.setText(ASCII);
+		add(ASCIIFrame, BorderLayout.CENTER);
+		validate();
+		if(enterToExit) {
+			ASCIIFrame.setText(ASCIIFrame.getText()+"\n\n  Press enter to continue.");
+			ASCIIExitArea=new JTextArea();
+			ASCIIExitArea.setBackground(ASCIIFrame.getBackground());
+			ASCIIExitArea.setCaretColor(ASCIIExitArea.getBackground());
+			ASCIIExitArea.setForeground(ASCIIExitArea.getBackground());
+			ASCIIExitArea.addKeyListener(new KeyListener() {
+				public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode()==KeyEvent.VK_ENTER)
+						hideASCIIFrame();
+				}
+				
+				public void keyReleased(KeyEvent e){}
+				public void keyTyped(KeyEvent e){}
+			});
+			ASCIIFrame.setFocusable(false);
+			add(ASCIIExitArea, BorderLayout.SOUTH);
+			ASCIIExitArea.requestFocusInWindow();
+			validate();
+		}
+		validate();
+	}
+	
+	public void hideASCIIFrame() {
+		remove(ASCIIFrame);
+		remove(ASCIIExitArea);
+		add(scrollPane, BorderLayout.CENTER);
+		validate();
+		add(leftPanel, BorderLayout.WEST);
+		validate();
+		textArea.setCaretColor(Color.BLACK);
+		textArea.setCaretPosition(textArea.getDocument().getLength()-1);
+		textArea.setCaretPosition(textArea.getDocument().getLength());
+		textArea.requestFocusInWindow();
+		updateStatsText();
 	}
 
 	public void setGameListener(GameListener g) {

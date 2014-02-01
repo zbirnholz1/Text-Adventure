@@ -28,7 +28,7 @@ eat: consume, devour, swallow:
 destroy: smash, break, shatter, obliterate, demolish, bash, break down: 
 search: look in, look through, rummage: 
 enter: go in, go into, go through, move into, move through, travel into, travel through: "
-attack: fight, kill, hit: 
+attack: fight, kill, hit, slash, target: 
 equip: put on, wear, don: 
 unequip: take off: 
 =approach: near, draw near, go near, go nearer, move near, move nearer: 
@@ -37,7 +37,7 @@ light: :
 extinguish: put out: 
 cut: slice, sever: 
 harvest: farm: 
-talk: talk to, talk with, converse, converse with, speak, speak with, speak to,: 
+talk: talk to, talk with, converse, converse with, speak, speak with, speak to: 
 show: present, give: Whom: to
 sleep: doze, nap: 
 unlock: : 
@@ -47,6 +47,7 @@ think: :
 help: h: 
 wait: z: 
 =quit: q: 
+=restart: reset: 
 =save: : "
 =load: restore: "
 =sound: musica: 
@@ -69,5 +70,6 @@ wait: z:
 =_playsound: : *
 =_loopsound: : *
 =_addmapbutton: : 
-=_cleartextarea: : 
+=_cleartextarea: : *
+=_setmapstate: : 
 _donothing: : 

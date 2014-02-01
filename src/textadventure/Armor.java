@@ -4,8 +4,7 @@ import org.json.*;
 
 public class Armor extends StaticObject {
 	private int weight, rating;
-	private Material material;
-	private Structure structure;
+	private ArmorType type;
 	
 	public Armor(JSONObject source) {
 		//TODO
@@ -25,12 +24,8 @@ public class Armor extends StaticObject {
 		return rating;
 	}
 	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public Structure getStructure() {
-		return structure;
+	public ArmorType getType() {
+		return type;
 	}
 
 }

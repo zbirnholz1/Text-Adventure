@@ -58,7 +58,7 @@ public class Game {
 					view.print("\n\nPlease enter the name of the saved game.\n\n>");
 					view.setGameListener(new GameListener() {
 						public void textTyped(String text) {
-							view.print("#");
+							view.print("\n");
 							Room originalRoom=player.getRoom();
 							parser.parse("load "+text);
 							if(player.getRoom().equals(originalRoom)) {
@@ -99,6 +99,8 @@ public class Game {
 							+ "Now I'm out here to visit him like he wanted me to, but it was a much longer journey than I remembered… and I've walked all the way from the last town!)^");
 					view.println(player.getRoom().getFullText());
 					player.getRoom().setIsVisited(true);
+					soundPlayer.setSoundIsOn(true);
+					soundPlayer.loop(player.getRoom().getSoundName(), SoundPlayer.OFFSETS.get(player.getRoom().getSoundName()), true);
 					view.println();
 					view.updateStatsText();
 				}
@@ -159,7 +161,7 @@ public class Game {
 				}
 			}
 		}
-		if(parser.getIndirectObject()!=null) {										//can't be null because there is a DO
+		if(parser.getIndirectObject()!=null) {					//can't be null because there is a DO
 			String effect=parser.getIndirectObject().process(verb, parser.getObject(), false);
 			if(effect!=null) {
 				StringTokenizer tokenizer=new StringTokenizer(effect, "][}{", true);
@@ -223,10 +225,11 @@ public class Game {
 			view.println("You can only go north, south, east, west, up, or down.");
 		else {
 			List<String> effects=player.go(direction);
-			if(effects==null)
-				return;
-			for(String str:effects)
-				parser.parse(str);
+			if(effects!=null) {
+				for(String str:effects)
+					parser.parse(str);
+				BattleCalculator.beginCombat(false);
+			}
 		}
 	}
 
@@ -580,9 +583,9 @@ public class Game {
 		else
 			view.println("Sound is now off.");
 		if(soundPlayer.soundIsOn()&&player.getRoom().getSoundName()!=null)
-			soundPlayer.loop(player.getRoom().getSoundName(), SoundPlayer.OFFSETS.get(player.getRoom().getSoundName()));
+			soundPlayer.loop(player.getRoom().getSoundName(), SoundPlayer.OFFSETS.get(player.getRoom().getSoundName()), true);
 		else
-			soundPlayer.stop();
+			soundPlayer.stop(true);
 	}
 
 	public void map() {
@@ -590,8 +593,22 @@ public class Game {
 			view.println("You don't have a map to look at.");
 			return;
 		}
-		view.println("Please wait for a later version of this game to use the map. Thank you for your patience.");
-		//TODO display the map
+		//view.println("Please wait for a later version of this game to use the map. Thank you for your patience.");
+
+		String text="  ";
+		BufferedReader reader=new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/maps/map"+player.getMapNumber()+".taf")));
+		try {
+			String line=reader.readLine();
+			while(line!=null) {
+				text+=line+"\n  ";
+				line=reader.readLine();
+			}
+			reader.close();
+		} catch(IOException e) {
+			view.println("There is something wrong with the map. :(");
+			e.printStackTrace();
+		}
+		view.showASCIIFrame(text, true);
 	}
 
 	public void help() {
@@ -638,7 +655,7 @@ public class Game {
 	public void quit(final boolean shouldConfirm) {
 		if(!shouldConfirm) {
 			view.stopResponding();
-			soundPlayer.stop();
+			soundPlayer.stop(false);
 			System.exit(0);
 		}
 		view.print("Are you sure you want to quit? (yes or no): ");
@@ -657,9 +674,41 @@ public class Game {
 						view.println("You quit after 1 move.");*/
 					view.println("\nThe game has finished. You may now close the window.");
 					view.stopResponding();
-					soundPlayer.stop();
+					soundPlayer.stop(false);
 				}
 				view.setGameListener(null);
+			}
+		});
+	}
+
+	public void restart() {
+		view.print("Are you sure you want to restart? (yes or no): ");
+		view.setGameListener(new GameListener() {
+			public void textTyped(String text) {
+				view.println();
+				String yn=text.trim().toLowerCase();
+				yn=yn.toLowerCase().trim();
+				if(yn==null||yn.length()==0||(!yn.equals("y")&&!yn.equals("yes"))) {
+					view.println("Okay.\n");
+					view.setGameListener(null);
+				}
+				else {
+					File tempSave=new File(supportPath+"saves/temp.taf");
+					tempSave.mkdirs();
+					deleteDirectoryContents(supportPath+"saves/temp.taf");
+					//RoomBlock.initializeBlockLocations();
+					block=new RoomBlock(0, "temp");
+					parser=new CommandParser();
+					if(player.has("map"))
+						view.removeMapButton();
+					player=new Player();
+					view.resetStatsText();
+					soundPlayer.stop(false);
+					soundPlayer.setSoundIsOn(false);
+					view.print("#");
+					view.setGameListener(null);
+					play();
+				}
 			}
 		});
 	}
@@ -801,7 +850,7 @@ public class Game {
 				view.println();
 				inventory();
 				if(soundPlayer.soundIsOn()&&soundPlayer.getCurrentSoundName()!=null&&!soundPlayer.getCurrentSoundName().equals(""))
-					soundPlayer.loop(soundPlayer.getCurrentSoundName(), SoundPlayer.OFFSETS.get(soundPlayer.getCurrentSoundName()));
+					soundPlayer.loop(soundPlayer.getCurrentSoundName(), SoundPlayer.OFFSETS.get(soundPlayer.getCurrentSoundName()), true);
 			} catch(Exception e) {
 				view.println("There was a problem loading your game: "+e);
 				e.printStackTrace();
@@ -1085,18 +1134,18 @@ public class Game {
 	}
 
 	public void stopsound() {
-		soundPlayer.stop();
+		soundPlayer.stop(false);
 	}
 
 	public void playsound() {
-		soundPlayer.play(parser.getObjectName());
+		soundPlayer.play(parser.getObjectName(), false);
 	}
 
 	public void loopsound() {
 		if(parser.getIndirectObjectName()!=null)
-			soundPlayer.loop(parser.getObjectName(), Integer.parseInt(parser.getIndirectObjectName()), SoundPlayer.OFFSETS.get(parser.getObjectName()));
+			soundPlayer.loop(parser.getObjectName(), Integer.parseInt(parser.getIndirectObjectName()), SoundPlayer.OFFSETS.get(parser.getObjectName()), false);
 		else
-			soundPlayer.loop(parser.getObjectName(), SoundPlayer.OFFSETS.get(parser.getObjectName()));
+			soundPlayer.loop(parser.getObjectName(), SoundPlayer.OFFSETS.get(parser.getObjectName()), false);
 	}
 
 	public void addobjective() {
@@ -1109,11 +1158,14 @@ public class Game {
 
 	public void addmapbutton() {
 		view.addMapButton();
-		System.out.println("map");
 	}
 
 	public void cleartextarea() {
 		view.clearTextArea();
+	}
+
+	public void setmapnumber() {
+		player.setMapNumber(Integer.parseInt(parser.getObjectName()));
 	}
 
 	public void donothing() {

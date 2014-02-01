@@ -3,14 +3,11 @@ package textadventure;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +24,7 @@ public class SoundPlayer {
 
 	public SoundPlayer() {
 		currentSoundName="";
-		soundIsOn=true;
+		soundIsOn=false;
 		musicIsEverywhere=false;
 		decoder=new Decoder();
 	}
@@ -62,7 +59,14 @@ public class SoundPlayer {
 		//should change rooms' musicNames accordingly (i.e. remove the file extensions)
 		if(musicIsEverywhere)
 			return;
-		stop();
+		boolean shouldFade=false;
+		for(int i=0; i<args.length; i++) {
+			if(args[i] instanceof Boolean) {
+				shouldFade=(Boolean)args[i];
+				break;
+			}
+		}
+		stop(shouldFade);
 		currentSoundName=name;
 		decoder=new Decoder();
 		try {
@@ -70,72 +74,73 @@ public class SoundPlayer {
 			final BufferedInputStream bin=new BufferedInputStream(in, 128*1024);
 			args[0]="/music/"+args[0];
 			args[1]=bin;
-			final ExecutorService service=Executors.newSingleThreadExecutor();
-			service.execute(
-					new Runnable() {
+			//final ExecutorService service=Executors.newSingleThreadExecutor();
+			//service.execute(
+					//new Runnable() {
+			new Thread() {
 						public void run() {
 							try {
-								service.shutdown();
+								//service.shutdown();
 								method.invoke(decoder, args);
 								//decoder.play("/music/"+name, bin);
 							} catch (Exception ex) {
 								ex.printStackTrace();
 							}
 						}
-					}
-					);
+					}.start();
+					//);
 		} catch(Exception e){e.printStackTrace();}
 	}
 
-	public void play(final String name) {
+	public void play(final String name, final boolean shouldFade) {
 		try {
-			Method method=decoder.getClass().getDeclaredMethod("play", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream")});
-			manageDecoder(name, method, new Object[]{name, null});
+			Method method=decoder.getClass().getDeclaredMethod("play", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Boolean(shouldFade).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, shouldFade});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void loop(final String name, final int numTimes) {
+	public void loop(final String name, final int numTimes, final boolean shouldFade) {
 		try {
-			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass()});
-			manageDecoder(name, method, new Object[]{name, null, numTimes});
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass(), new Boolean(shouldFade).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, numTimes, shouldFade});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void loop(final String name) {
+	public void loop(final String name, final boolean shouldFade) {
 		try {
-			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream")});
-			manageDecoder(name, method, new Object[]{name, null});
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Boolean(shouldFade).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, shouldFade});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void loop(final String name, final long offset) {
+	public void loop(final String name, final long offset, final boolean shouldFade) {
 		try {
-			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Long(offset).getClass()});
-			manageDecoder(name, method, new Object[]{name, null, offset});
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Long(offset).getClass(), new Boolean(shouldFade).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, offset, shouldFade});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void loop(final String name, final int numTimes, final long offset) {
+	public void loop(final String name, final int numTimes, final long offset, final boolean shouldFade) {
 		try {
-			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass(), new Long(offset).getClass()});
-			manageDecoder(name, method, new Object[]{name, null, numTimes, offset});
+			Method method=decoder.getClass().getDeclaredMethod("loop", new Class<?>[]{name.getClass(), Class.forName("java.io.InputStream"), new Integer(numTimes).getClass(), new Long(offset).getClass(), new Boolean(shouldFade).getClass()});
+			manageDecoder(name, method, new Object[]{name, null, numTimes, offset, shouldFade});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void stop() {
+	public void stop(boolean shouldFade) {
 		musicIsEverywhere=false;
 		if(decoder!=null) {
-			decoder.stop();
+			decoder.stop(shouldFade);
 			currentSoundName="";
 		}
 	}
@@ -146,11 +151,11 @@ public class SoundPlayer {
 			if(!musicIsEverywhere)
 				currentSoundName="";
 			boolean m=musicIsEverywhere;
-			stop();
+			stop(true);
 			musicIsEverywhere=m;
 		}
 		else if(musicIsEverywhere)
-			loop(currentSoundName, OFFSETS.get(currentSoundName));
+			loop(currentSoundName, OFFSETS.get(currentSoundName), true);
 	}
 
 	public void setMusicEverywhere(boolean m) {

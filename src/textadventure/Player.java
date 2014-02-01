@@ -11,10 +11,11 @@ public class Player extends TACharacter {
 	private List<String> objectives;
 	private int loadedRoomID;
 	private int loadedBlockNumber;
-	
+	private int mapNumber;
+
 	public static final int INVENTORY_CAPACITY=30;
 	public static final Map<String, Integer> LIGHT_OBJECTS=initializeLightObjects();
-	
+
 	public Player() {
 		name="me";
 		otherNames=new HashSet<String>(Arrays.asList("myself", "me", "traveler"));
@@ -29,8 +30,9 @@ public class Player extends TACharacter {
 		strength=1;
 		intelligence=2;
 		speed=2;
+		mapNumber=0;
 	}
-	
+
 	public Player(JSONObject source) {
 		super(source);
 		isPrinted=false;
@@ -39,19 +41,21 @@ public class Player extends TACharacter {
 			numMoves=source.getInt("numMoves");
 			loadedRoomID=source.getInt("roomID");
 			loadedBlockNumber=source.getInt("blockNumber");
+			mapNumber=source.getInt("mapNumber");
 			JSONArray JSONObjectives=source.getJSONArray("objectives");
 			objectives=new LinkedList<String>();
 			for(int i=0; i<JSONObjectives.length(); i++)
 				objectives.add(JSONObjectives.getString(i));
 		} catch(JSONException e){Main.game.getView().println("Something went wrong: "+e);}
 	}
-	
+
 	public JSONObject toJSONObject() {
 		JSONObject obj=super.toJSONObject();
 		try {
 			obj.put("numMoves", numMoves);
 			obj.put("roomID", room.getID());
 			obj.put("blockNumber", Main.game.getBlock().getNumber());
+			obj.put("mapNumber", mapNumber);
 			JSONArray JSONObjectives=new JSONArray();
 			for(String str:objectives)
 				JSONObjectives.put(str);
@@ -59,7 +63,7 @@ public class Player extends TACharacter {
 		} catch (JSONException e) {Main.game.getView().println("Something went wrong: "+e);}
 		return obj;
 	}
-	
+
 	public static Map<String, Integer> initializeLightObjects() {
 		Map<String, Integer> lightObjects=new HashMap<String, Integer>();
 		try {
@@ -75,11 +79,11 @@ public class Player extends TACharacter {
 		} catch(IOException e){e.printStackTrace();Main.game.getView().println("Something went wrong: "+e);}
 		return lightObjects;
 	}
-	
+
 	public boolean take(TAObject toTake) {
 		return take(toTake, true);
 	}
-	
+
 	public boolean take(TAObject toTake, boolean shouldPrint) {
 		if(!toTake.isTakeable()) {
 			Main.game.getView().println("You can't take the "+toTake.getFullName()+"!");
@@ -101,11 +105,11 @@ public class Player extends TACharacter {
 			Main.game.getView().println("You don't have enough room in your inventory to take the"+toTake.getFullName()+".");
 		return false;
 	}
-	
+
 	public boolean take(String toTakeStr) {
 		return take(toTakeStr, true);
 	}
-	
+
 	public boolean take(String toTakeStr, boolean shouldPrint) {
 		if(toTakeStr.equals("all")) {
 			int numAdded=0;
@@ -117,7 +121,8 @@ public class Player extends TACharacter {
 			for(TAObject obj:room.getContents()) {
 				if(obj.isTakeable()&&inventory.size()<INVENTORY_CAPACITY&&inventory.add(obj)) {
 					numAdded++;
-					Main.game.getView().println(obj.getFullNameWithCapitalizedArticle()+": taken");
+					if(shouldPrint)
+						Main.game.getView().println(obj.getFullNameWithCapitalizedArticle()+": taken");
 					added.add(obj);
 					/*if(obj instanceof Weapon)
 						attacks.add((Weapon)obj);*/
@@ -130,8 +135,8 @@ public class Player extends TACharacter {
 				return true;
 			}
 			else if(numAdded==originalNumItemsInRoom) {
-				if(shouldPrint)
-					Main.game.getView().println("Taken.");
+				//if(shouldPrint)
+				//Main.game.getView().println("Taken.");
 				return true;
 			}
 			return false;
@@ -139,11 +144,11 @@ public class Player extends TACharacter {
 		TAObject toTake=room.getObject(toTakeStr);
 		return take(toTake);
 	}
-	
+
 	public boolean drop(TAObject toDrop) {
 		return drop(toDrop, true);
 	}
-	
+
 	public boolean drop(TAObject toDrop, boolean shouldPrint) {
 		if(toDrop.getName().equals("backpack")) {
 			if(shouldPrint)
@@ -164,11 +169,11 @@ public class Player extends TACharacter {
 		}
 		return false;
 	}
-	
+
 	public boolean drop(String item) {
 		return drop(item, true);
 	}
-	
+
 	public boolean drop(String item, boolean shouldPrint) {
 		if(item.equals("backpack")) {
 			if(shouldPrint)
@@ -217,7 +222,7 @@ public class Player extends TACharacter {
 		}
 		return false;
 	}
-	
+
 	public List<String> go(int direction) {
 		Room newRoom=room.getAdjacent(direction);
 		if(newRoom==null) {
@@ -258,19 +263,19 @@ public class Player extends TACharacter {
 		}
 		return effects;
 	}
-	
+
 	public void setRoom(Room newRoom) {
 		if(newRoom.getSoundName()!=null&&Main.game.getSoundPlayer().soundIsOn()&&(room==null||!newRoom.getSoundName().equals(room.getSoundName())))
-			Main.game.getSoundPlayer().loop(newRoom.getSoundName(), SoundPlayer.OFFSETS.get(newRoom.getSoundName()));
+			Main.game.getSoundPlayer().loop(newRoom.getSoundName(), SoundPlayer.OFFSETS.get(newRoom.getSoundName()), true);
 		else if(newRoom.getSoundName()==null)
-			Main.game.getSoundPlayer().stop();
+			Main.game.getSoundPlayer().stop(true);
 		super.setRoom(newRoom);
 	}
-	
+
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
 		return null;
 	}
-	
+
 	public void saveInfo() {
 		try {
 			PrintWriter out=new PrintWriter(new BufferedWriter(new FileWriter(Game.supportPath+"saves/temp.taf/player.taf")));
@@ -278,11 +283,29 @@ public class Player extends TACharacter {
 			out.close();
 		} catch(Exception e){Main.game.getView().println("There was a problem saving your progress: "+e);e.printStackTrace();}
 	}
-	
+
 	public void attack(TACharacter defender) {
-		//TODO
+		Weapon attack=(Weapon)Main.game.getCommandParser().getIndirectObject();
+		for(int i=0; i<attack.getNumAttack(); i++) {
+			int damage=BattleCalculator.calculateDamage(this, defender, attack);
+			if(damage==-1) {
+				Main.game.getView().println("The "+defender.getFullName()+" dodged your attack.");
+				//TODO print real descriptions
+			}
+			else {
+				defender.takeDamage(damage);
+				Main.game.getView().println("You hit the "+defender.getFullName()+" with your "+attack.getFullName());
+				//TODO print real descriptions
+				if(defender.getHP()==0) {
+					Main.game.getView().println("Your attack kills the "+defender.getFullName()+"!");
+					//TODO print real descriptions
+					room.remove(defender);
+					break;
+				}
+			}
+		}
 	}
-	
+
 	public String getInventoryText() {
 		if(inventory.size()==0||(inventory.size()==1&&has("backpack")))
 			return "You have nothing in your inventory.";
@@ -296,23 +319,24 @@ public class Player extends TACharacter {
 		}
 		return text;
 	}
-	
+
 	public int getNumMoves() {
 		return numMoves;
 	}
-	
+
 	public int getLoadedRoomID() {
 		return loadedRoomID;
 	}
-	
+
 	public int getLoadedBlockNumber() {
 		return loadedBlockNumber;
 	}
-	
+
 	public void addMove() {
 		numMoves++;
+		BattleCalculator.beginCombat(true);
 	}
-	
+
 	public boolean hasLight() {
 		for(TAObject obj:inventory) {
 			if(LIGHT_OBJECTS.containsKey(obj.getFullName())) {
@@ -324,11 +348,11 @@ public class Player extends TACharacter {
 		}
 		return false;
 	}
-	
+
 	public List<String> getObjectives() {
 		return objectives;
 	}
-	
+
 	public void setHP(int newHP) {
 		super.setHP(newHP);
 		Main.game.getView().updateStatsText();
@@ -355,5 +379,13 @@ public class Player extends TACharacter {
 	public void setArmor(Armor newArmor) {
 		super.setArmor(newArmor);
 		Main.game.getView().updateStatsText();
+	}
+
+	public void setMapNumber(int num) {
+		mapNumber=num;
+	}
+
+	public int getMapNumber() {
+		return mapNumber;
 	}
 }

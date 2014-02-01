@@ -7,8 +7,7 @@ public class Weapon extends StaticObject {
 	private int numAttacks;
 	//private int maxRange?
 	private double accuracy, rangeSlope, critSlope;
-	private Material material;
-	private Structure structure;
+	private AttackType type;
 	private boolean isASpell;
 
 	public Weapon(String name, String adjective, String description) {
@@ -22,8 +21,7 @@ public class Weapon extends StaticObject {
 			numAttacks=source.getInt("numAttacks");
 			accuracy=source.getDouble("accuracy");
 			rangeSlope=source.getDouble("rangeSlope");
-			material=Material.valueOf(source.getString("material"));
-			structure=Structure.valueOf(source.getString("structure"));
+			type=AttackType.valueOf(source.getString("structure"));
 			isASpell=source.getBoolean("isASpell");
 		} catch (JSONException e) {
 			Main.game.getView().println("Something went wrong: "+e);
@@ -37,8 +35,7 @@ public class Weapon extends StaticObject {
 			obj.put("numAttacks", numAttacks);
 			obj.put("accuracy", accuracy);
 			obj.put("rangeSlope", rangeSlope);
-			obj.put("material", material.toString());
-			obj.put("structure", structure.toString());
+			obj.put("structure", type.toString());
 			obj.put("isASpell", isASpell);
 		} catch(JSONException e) {
 			Main.game.getView().println("Something went wrong: "+e);
@@ -66,16 +63,16 @@ public class Weapon extends StaticObject {
 		return critSlope;
 	}
 
-	public Material getMaterial() {
-		return material;
-	}
-
-	public Structure getStructure() {
-		return structure;
+	public AttackType getType() {
+		return type;
 	}
 
 	public boolean isASpell() {
 		return isASpell;
+	}
+	
+	public int getNumAttack() {
+		return numAttacks;
 	}
 
 }

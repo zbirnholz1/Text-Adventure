@@ -1,8 +1,10 @@
 package textadventure;
 
+import java.util.List;
+
 public class BattleCalculator
 {
-	public static final int MAX_PROXIMITY=5;
+	public static final int MAX_PROXIMITY=4;
 	
     public static int calculateDamage(TACharacter attacker, TACharacter defender, Weapon attack)
     {
@@ -28,5 +30,58 @@ public class BattleCalculator
     private static int getMultiplier(Weapon attack, Armor armor) {
     	return 1;
     }
+    
+    public static void beginCombat(boolean afterPlayer) {
+		List<TACharacter> fighters=Main.game.getPlayer().getRoom().getCharactersBySpeed();
+		if(fighters.size()>1) {
+			int[] turns=new int[fighters.size()];
+			boolean stop=false;
+			while(!stop) {
+				int startIndex=0;
+				double totalSpeed=0;
+				if(afterPlayer) {
+					for(int j=0; !(fighters.get(j) instanceof Player); j++) {
+						totalSpeed+=fighters.get(j).getSpeed();
+						startIndex++;
+					}
+					startIndex++;
+					afterPlayer=false;
+				}
+				for(int i=startIndex; i<fighters.size(); i++) {
+					totalSpeed+=fighters.get(i).getSpeed();
+					double probability=fighters.get(i).getSpeed()/(totalSpeed/(i+1));
+					if(fighters.get(i).equals(Main.game.getPlayer())) {
+						if(Math.random()<probability) {
+							stop=true;
+							break;
+						}
+					}
+					else {
+						if(Math.random()<probability)
+							turns[i]++;
+					}
+				}
+			}
+			makeMoves(turns);
+		}
+	}
+
+	public static void makeMoves(int[] turns) {
+		List<TACharacter> fighters=Main.game.getPlayer().getRoom().getCharactersBySpeed();
+		for(int i=0; i<turns.length; i++) {
+			if(turns[i]==0)
+				Main.game.getView().println("The "+fighters.get(i).getFullName()+" doesn't have a chance to react.");
+			else {
+				fighters.get(i).attack(Main.game.getPlayer());
+				for(int t=1; t<turns[i]; t++) {
+					//TODO implement allied characters?!????????
+					Main.game.getView().println("You don't have a chance to react to the "+fighters.get(i).getFullName());
+					fighters.get(i).attack(Main.game.getPlayer());
+					if(Main.game.getPlayer().getHP()==0)
+						return;
+				}
+			}
+		}
+	}
 }
         

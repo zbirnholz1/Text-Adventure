@@ -1,12 +1,8 @@
-/blocklocations.taf
-/blocks
-/combat
-/commands.taf
-/lightobjects.taf
-/mp3
-/music
 /textadventure
 /topicsproject
+/mp3
 /org
+/blocks
 /npcs
-/typeChart.taf
+/maps
+/music

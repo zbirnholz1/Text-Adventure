@@ -33,6 +33,8 @@ public class NPC extends TACharacter {
 				for(int i=0; i<JSONConversationRooms.length(); i++)
 					conversationRooms.add(JSONConversationRooms.getInt(i));
 			}
+			else
+				return;
 		} catch(JSONException e) {Main.game.getView().println("Something went wrong: "+e);}
 		String fileName=name;
 		if(adjective!=null)
@@ -119,8 +121,13 @@ public class NPC extends TACharacter {
 					text=text.substring(firstIndex, lastIndex);
 				}
 				if(!conversation.getCorrectPlayerResponses(conversationIndex).contains(text.toLowerCase())&&conversation.getCorrectPlayerResponses(conversationIndex).size()!=0) {
-					Main.game.getView().printlnNPC("\n"+getFullName()+": \""+conversation.getNPCIncorrectResponses().get(conversationIndex)+"\"");
+					Main.game.getView().printlnNPC("\n"+getFullName()+": \""+conversation.getNPCIncorrectResponses().get(conversationIndex)+"\"\n");
 					Main.game.getView().setGameListener(null);
+					if(Main.game.getSoundPlayer().soundIsOn()) {
+						Main.game.getSoundPlayer().stop(true);
+						if(Main.game.getPlayer().getRoom().getSoundName()!=null)
+							Main.game.getSoundPlayer().loop(Main.game.getPlayer().getRoom().getSoundName(), SoundPlayer.OFFSETS.get(Main.game.getPlayer().getRoom().getSoundName()), true);
+					}
 					return;
 				}
 				else {
@@ -133,8 +140,11 @@ public class NPC extends TACharacter {
 						for(String str:effects)
 							Main.game.getCommandParser().parse(str);
 					}
-					if(conversation.getPlayerStatements().get(conversationIndex)!=null)
-						Main.game.getView().printlnNPC("\nYou: \""+conversation.getPlayerStatements().get(conversationIndex)+"\"");
+					if(conversation.getPlayerStatements().get(conversationIndex)!=null) {
+						if(conversation.getPlayerPrompts().get(conversationIndex)!=null)
+							Main.game.getView().printlnNPC();
+						Main.game.getView().printlnNPC("You: \""+conversation.getPlayerStatements().get(conversationIndex)+"\"");
+					}
 					conversationIndex++;
 					if(conversationIndex==conversation.getNPCStatements().size()) {
 						processEffect(number);
@@ -168,8 +178,14 @@ public class NPC extends TACharacter {
 		//only called when the conversation was completed
 		Main.game.getView().setGameListener(null);
 		Main.game.getView().println();
-		if(number!=nextConversationNumber)
+		if(number!=nextConversationNumber) {
+			if(Main.game.getSoundPlayer().soundIsOn()&&!Main.game.getSoundPlayer().musicIsEverywhere()&&!Main.game.getSoundPlayer().getCurrentSoundName().equals(Main.game.getPlayer().getRoom().getSoundName())) {
+				Main.game.getSoundPlayer().stop(true);
+				if(Main.game.getPlayer().getRoom().getSoundName()!=null)
+					Main.game.getSoundPlayer().loop(Main.game.getPlayer().getRoom().getSoundName(), SoundPlayer.OFFSETS.get(Main.game.getPlayer().getRoom().getSoundName()), true);
+			}
 			return;
+		}
 		nextConversationNumber++;
 		String fileName=name;
 		if(adjective!=null)
@@ -209,6 +225,11 @@ public class NPC extends TACharacter {
 				}
 				firstCharOfLastToken=toProcess.charAt(0);
 			}
+		}
+		if(Main.game.getSoundPlayer().soundIsOn()&&!Main.game.getSoundPlayer().musicIsEverywhere()&&!Main.game.getSoundPlayer().getCurrentSoundName().equals(Main.game.getPlayer().getRoom().getSoundName())) {
+			Main.game.getSoundPlayer().stop(true);
+			if(Main.game.getPlayer().getRoom().getSoundName()!=null)
+				Main.game.getSoundPlayer().loop(Main.game.getPlayer().getRoom().getSoundName(), SoundPlayer.OFFSETS.get(Main.game.getPlayer().getRoom().getSoundName()), true);
 		}
 	}
 
