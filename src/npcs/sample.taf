@@ -1,6 +1,7 @@
-{"conversationTitle: "a description of the conversation; used for listing multiple conversation possibilities",
- "conversationRooms": [1, 2, 3],
+{"title: "a description of the conversation; used for listing multiple conversation possibilities",
+ "rooms": [1, 2, 3],
  "conversationStarters": ["a list", "of ways", "to start", "this conversation", "talk person"],
+ "reachable": true,
  "vertices":[
 	{"ID": 0,
 		"effect": "whatever happens upon reaching this vertex",

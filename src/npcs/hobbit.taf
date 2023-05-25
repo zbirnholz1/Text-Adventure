@@ -1,10 +1,74 @@
-{"conversationTitle":"Meeting for the first time",
-"conversationRooms":[7],
-"NPCStatements":["{hobbit.mp3}Hello. How did you get in here?","Alright then. What are you doing here?","Well, {playerName}, that goes back a long way. His name was Elessar Vardamir and he was one of the best cartographers around.","So that's who you are. Anyways, he would always go off on long journeys to expand his maps, but every time he would come back in time to harvest his wheat. I haven't seen him for months, but I'm getting concerned now that we're at the tail end of the harvest season."],
-"playerPrompts":["Well, I ", "I am ", "I know! I was his apprentice for 10 ", "Hmm... I wonder what happened to him. We were really close because he taught me everything I know about "],
-"correctPlayerResponses":[[],[],[],["*map*","*cartography","*cartographer*"]],
-"playerStatements":[null, "My name is {playerName}, by the way. Does anybody live in that house anymore?", "We spent a lot of our time around that house.", "Since I came all this way, we should try to find him!"],
-"incorrectResponseEffects":[null,null,null,"{redo}[    (You: No, come on, {playerName}, think! That's not what he taught me. I guess I need to think more before I speak.)\nNote: you may choose to not answer by just pressing ENTER.]"],
-"enterToEndEffects":[null,null,null,"[The hobbit looks at you expectantly and seems like he wants to finish the conversation you two were just having.]"],
-"playerResponseEffects":[null,null,null,null],
-"effect":"{_setfield bedroom soundName:hobbit.mp3}[You decide to set out to find your master. The hobbit says that he will go with you!{_teleport me 6}{_setentereffect \"|_setroomindirection 1 15|$The hobbit points out a secret passageway on the south wall that you didn't notice before.$|_setfield tunnel \\\"description:The east end of the tunnel. Roots make going further east impossible. There are stairs carved into the earth going up and a secret passageway in the south wall.\\\"||_removeentereffect|\"}{_teleport me 7}{_makefollow hobbit}"}
+{"title": "Meeting for the first time",
+ "rooms": [7],
+ "conversationStarters": ["talk hobbit"],
+ "reachable": true,
+ "vertices":[
+	{"ID": 0,
+		"effect": NULL,
+		"playerStatement": NULL, 
+    	"NPCStatement": "{hobbit.mp3}Hello. How did you get in here?", 
+    	"playerPrompt": "Well, I ",
+    	#results array contains ordered pairs of (possible input, destination vertex) to decide where the conversation goes
+    	#an empty or NULL results array indicates that this is the end of the conversation
+    	#a NULL string as the ONLY entry in the results array like (null, 4) means that this vertex does not accept user input and proceeds directly to the next vertex
+    	"playerInputResults": [
+    		["*", 1]
+    	],
+    	#losable indicates whether inputs not included in the results above are considered incorrect (and would fail/end the conversation)
+    	"losable": false,
+    	"incorrectResult": "There is no wrong answer to this question.",
+    	"incorrectEffect": null,
+    },
+    {"ID": 1,
+    	"effect": NULL,
+    	"playerStatement": NULL, 
+    	"NPCStatement": "Alright then. What are you doing here?", 
+    	"playerPrompt": "I am ",
+    	#the vertex number paired with a NULL key is the default (loss/failure) destination for an incorrect answer
+    	"playerInputResults": [
+    		["*", 2]
+    	],
+    	"losable": false,
+    	"incorrectResult": "There is no wrong answer to this question.",
+    	"incorrectEffect": null,
+    },
+    {"ID": 2,
+    	"effect": NULL,
+    	"playerStatement": "My name is playerName, by the way. Does anybody live in that house anymore?", 
+    	"NPCStatement": "Well, playerName, that goes back a long way. His name was Elessar Vardamir and he was one of the best cartographers around.", 
+    	"playerPrompt": "I know! I was his apprentice for 10 ",
+    	#the vertex number paired with a NULL key is the default (loss/failure) destination for an incorrect answer
+    	"playerInputResults": [
+    		["*", 3]
+    	],
+    	"losable": false,
+    	"incorrectResult": "There is no wrong answer to this question.",
+    	"incorrectEffect": null,
+    },
+    {"ID": 3,
+    	"effect": NULL,
+    	"playerStatement": "We spent a lot of our time around that house.", 
+    	"NPCStatement": "So that's who you are. Anyways, he would always go off on long journeys to expand his maps, but every time he would come back in time to harvest his wheat. I haven't seen him for months, but I'm getting concerned now that we're at the tail end of the harvest season.", 
+    	"playerPrompt": "Hmm... I wonder what happened to him. We were really close because he taught me everything I know about ",
+    	#the vertex number paired with a NULL key is the default (loss/failure) destination for an incorrect answer
+    	"playerInputResults": [
+    		[["*map*","*c(h)?artograph*"], 4]
+    	],
+    	"losable": false,
+    	"incorrectResult": "    (You: No, come on, playerName, think! That's not what he taught me. I guess I need to think more before I speak.)\nNote: you may choose to not answer by just pressing ENTER.",
+    	"incorrectEffect": null,
+    },
+    {"ID": 4,
+    	"effect": "{_setfield bedroom soundName:hobbit.mp3}[You decide to set out to find your master. The hobbit says that he will go with you!{_teleport me 6}{_setentereffect \"|_setroomindirection 1 15|$The hobbit points out a secret passageway on the south wall that you didn't notice before.$|_setfield tunnel \\\"description:The east end of the tunnel. Roots make going further east impossible. There are stairs carved into the earth going up and a secret passageway in the south wall.\\\"||_removeentereffect|\"}{_teleport me 7}{_makefollow hobbit}",
+    	"playerStatement": "Since I came all this way, we should try to find him!", 
+    	"NPCStatement": NULL, 
+    	"playerPrompt": NULL,
+    	#the vertex number paired with a NULL key is the default (loss/failure) destination for an incorrect answer
+    	"playerInputResults": [],
+    	"losable": false,
+    	"incorrectResult": "There is no wrong answer to this question.",
+    	"incorrectEffect": null,
+    }
+    #etc. for the whole conversation
+ ]
+}

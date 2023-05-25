@@ -449,8 +449,8 @@
  "chests":[
  	{"name":"hollow",
  	 "otherNames":[
- 	 	["bark","squirrel","tree"],
- 	 	["bark","squirrel","tree"],
+ 	 	["bark","squirrel","squirrels","tree"],
+ 	 	["bark","squirrel","squirrels","tree"],
  	 	["bark","tree"]
  	 ],
  	 "adjective": "squirrels'",

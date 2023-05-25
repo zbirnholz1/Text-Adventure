@@ -64,6 +64,7 @@ public class Conversation {
 			//reachable
 			isReachable = source.getBoolean("reachable");
 		} catch (JSONException e) {
+			e.printStackTrace();
 			Main.game.getView().println("Something went wrong loading a conversation: "+e);
 		}
 	}
@@ -85,8 +86,8 @@ public class Conversation {
 				obj.accumulate("vertices", v.toJSONObject());
 			}
 		} catch(JSONException e) {
-			Main.game.getView().println("Something went wrong saving a conversation: "+e);
 			e.printStackTrace();
+			Main.game.getView().println("Something went wrong saving a conversation: "+e);
 		}
 		return obj;
 	}
@@ -240,10 +241,21 @@ public class Conversation {
 				if (JSONPlayerInputResults != null) {
 					for (int i = 0; i < JSONPlayerInputResults.length(); i++) {
 						JSONArray JSONOrderedPair = JSONPlayerInputResults.getJSONArray(i);
-						Object[] orderedPair = new Object[2];
-						orderedPair[0] = JSONOrderedPair.isNull(0) ? null : JSONOrderedPair.getString(0); //the input
-						orderedPair[1] = JSONOrderedPair.getInt(1); //the resulting next vertex
-						playerInputResults.add(orderedPair);
+						try {
+							JSONArray JSONMultipleInputsToSameVertex = JSONOrderedPair.getJSONArray(0);
+							for (int j = 0; j < JSONMultipleInputsToSameVertex.length(); j++) {
+								Object[] orderedPair = new Object[2];
+								orderedPair[0] = JSONMultipleInputsToSameVertex.isNull(j) ? null : JSONMultipleInputsToSameVertex.getString(j); //the input
+								orderedPair[1] = JSONOrderedPair.getInt(1); //the resulting next vertex
+								playerInputResults.add(orderedPair);
+							}
+						} catch (JSONException jsone) {
+							// then the key in the ordered pair was just null or a string, but not a list
+							Object[] orderedPair = new Object[2];
+							orderedPair[0] = JSONOrderedPair.isNull(0) ? null : JSONOrderedPair.getString(0); //the input
+							orderedPair[1] = JSONOrderedPair.getInt(1); //the resulting next vertex
+							playerInputResults.add(orderedPair);
+						}
 					}
 				}
 
@@ -271,6 +283,7 @@ public class Conversation {
 					correctEffect = null;
 				}
 			} catch (JSONException e) {
+				e.printStackTrace();
 				Main.game.getView().println("Something went wrong loading a vertex: "+e);
 			}
 		}
@@ -450,7 +463,7 @@ public class Conversation {
 			if(currentVertex.isLosable()) {
 				if(nextVertexID == -1) {
 					//then they put in the wrong answer
-					Main.game.getView().printlnNPC(currentVertex.getIncorrectResult());
+					Main.game.getView().printlnNPC(currentVertex.getIncorrectResult().replace("playerResponse", text).replace("playerName", Main.game.getPlayer().getFullName()));
 					Main.game.getView().setGameListener(null);
 
 					if(currentVertex.getIncorrectEffect() != null) {
@@ -475,7 +488,7 @@ public class Conversation {
 					Main.game.getView().setGameListener(null);
 				} else if(nextVertexID == -1) {
 					//no-loss: try this vertex again
-					Main.game.getView().printlnNPC(currentVertex.getIncorrectResult());
+					Main.game.getView().printlnNPC(currentVertex.getIncorrectResult().replace("playerResponse", text).replace("playerName", Main.game.getPlayer().getFullName()));
 					//reprint the player prompt
 					String playerPrompt = currentVertex.getPlayerPrompt();
 					String toPrint = "You: "+ playerPrompt;

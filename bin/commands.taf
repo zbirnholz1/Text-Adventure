@@ -2,50 +2,56 @@
 #Use a space after the colon to indicate that there are no synonyms/keywords.
 #
 #Verbs beginning with _ are for the system. Verbs beginning with = do not
-#add a move to the Player's numMoves variable.
+#add a move to the Player's numMoves variable. Verbs beginning with > automatically
+#take the object before executing the command.
 #
 #I might want to include prepositions for introducing objects or keywords
 #that help specify which verb to use.
 #
-north: n, go north, go n: 
-south: s, go south, go s: 
-east: e, go east, go e: 
-west: w, go west, go w: 
-up: u, go up, go u: 
-down: d, go down, go d: 
-go: move to, move toward, move towards, travel, exit: 
-inventory: i, items: 
-take: pick, pick up, get, obtain: all, everything
-drop: leave, release: all, everything, bass
-look: l, gaze: 
-examine: x, inspect, investigate, look at: 
-open: open up: 
+=north: n, go north, go n: 
+=south: s, go south, go s: 
+=east: e, go east, go e: 
+=west: w, go west, go w: 
+=up: u, go up, go u, ascend: 
+=down: d, go down, go d, descend: 
+=go: move to, move toward, move towards, travel, walk, continue: 
+=inventory: i, items: 
+=take: pick, pick up, get, obtain: all, everything
+=drop: release, put down, untake, get rid: all, everything, bass
+=look: l, gaze: 
+=examine: x, inspect, investigate, look at, gaze at: 
+open: open up, pry, pry open: 
 close: shut: 
 dig: excavate: 
 jump: leap, bound: 
 climb: scale, ascend: 
-eat: consume, devour, swallow: 
-destroy: smash, break, shatter, obliterate, demolish, bash, break down: 
-search: look in, look through, rummage: 
-enter: go in, go into, go through, move into, move through, travel into, travel through: "
+>eat: consume, devour, swallow: 
+knock: pound, rap: 
+kick: stomp, knee: 
+think: ponder: 
+>put: store, add, place, lay: all, everything, ground, down, floor
+destroy: smash, break, shatter, obliterate, demolish, bash, break down, bash in, knock down, unstack: 
+search: look in, look through, rummage, explore: 
+enter: go to, go in, go into, go through, move to, move into, move through, travel into, travel through: "
+exit: out, leave, go out, travel out, set out, set off, travel from, depart, get out: "
 attack: fight, kill, hit, slash, target: 
-equip: put on, wear, don: 
-unequip: take off: 
-=approach: near, draw near, go near, go nearer, move near, move nearer: 
+>equip: put on, wear, don: 
+unequip: take off, remove: 
+=approach: near, draw near, go near, go nearer, draw nearer, move near, move nearer, draw closer, draw close, go closer, go close, move close, move closer: 
 =retreat: retreat from, back away, back up, move away, move farther, move further: 
-light: : 
+>light: : 
 extinguish: put out: 
 cut: slice, sever: 
 harvest: farm: 
+move: drag, push, pull: 
 talk: talk to, talk with, converse, converse with, speak, speak with, speak to: 
-show: present, give: Whom: to
-sleep: doze, nap: 
+>show: present, give: Whom: to
+sleep: doze, nap, rest: 
 unlock: : 
-read: : 
-map: m: 
-think: : 
-help: h: 
-wait: z: 
+>read: : 
+=map: m: 
+=help: h: 
+delay: wait, z, stall, do nothing: 
 =quit: q: 
 =restart: reset: 
 =save: : "
@@ -55,8 +61,12 @@ wait: z:
 =_teleport: : *
 =_setfield: : *
 =_setentereffect: : *
+=_addothername: : "
+=_removeothername: : "
 =_die: : *
-=_removeverbeffect: : *
+=_restoreheath: : 
+=_removeverbeffect: : "
+=_addverbeffect: _setverbeffect: "
 =_setroomindirection: : *
 =_makefollow: : 
 =_makeunfollow: : 
@@ -65,11 +75,18 @@ wait: z:
 =_setproximity: : *
 =_addtoinventory: : 
 =_removeentereffect: : *
-=_addtoconversationeffect: : *
+=_addtovertexeffect: : *
+=_removefromvertexeffect: : *
+=_makeconversationreachable: : "
+=_makeconversationunreachable: : "
 =_stopsound: : *
 =_playsound: : *
 =_loopsound: : *
 =_addmapbutton: : 
 =_cleartextarea: : *
 =_setmapstate: : 
-_donothing: : 
+=_takenoprint: : 
+=_fadetowhite: : *
+=_setbackgroundcolor: : *
+=_settextcolor: : *
+=_donothing: : 

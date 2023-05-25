@@ -412,7 +412,6 @@ public class Player extends TACharacter {
 			return;
 		numMoves++;
 		justChangedProximity=false;
-		BattleCalculator.beginCombat(true);
 	}
 
 	public void takeDamage(int amount) {
