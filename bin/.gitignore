@@ -1,8 +1,14 @@
-/textadventure
-/topicsproject
-/mp3
-/org
-/blocks
-/npcs
-/maps
-/music
+/blocklocations.taf
+/blocks/
+/commands.taf
+/lightobjects.taf
+/maps/
+/mp3/
+/music/
+/npcs/
+/org/
+/textadventure/
+/topicsproject/
+
+# Mac Files #
+.DS_STORE
