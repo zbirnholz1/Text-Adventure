@@ -1,0 +1,2 @@
+All music files should be exported at 80 kbps and normalized to some amplitude (tbd).
+Also try to sort them in this folder by order of “appearance” (i.e. playing order).
