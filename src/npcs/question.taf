@@ -1,0 +1,44 @@
+{"title": "The eternal question",
+ "rooms": [13],
+ "conversationStarters": [],
+ "reachable": true,
+ "vertices":[
+	{"ID": 0,
+		"effect": null,
+		"playerStatement": null, 
+    	"NPCStatement": "Why is the chicken crossing the road?", 
+    	"playerPrompt": "To",
+    	"playerInputResults": [
+    		["*", 2],
+    		["", 1]
+    	],
+    	"losable": false,
+    	"incorrectResult": "There is no wrong answer to this question.",
+    	"incorrectEffect": null,
+    	"correctEffect": "{_addtovertexeffect question \"2:playerResponse.]\"}"
+    },
+    {"ID": 1,
+    	"effect": "{_removefromvertexeffect question \"2:.]\"}",
+    	"playerStatement": "(Oh come on, there has to be SOME reason for it!)", 
+    	"NPCStatement": null, 
+    	"playerPrompt": null,
+    	"playerInputResults": [
+    		[null, 0]
+    	],
+    	"losable": false,
+    	"incorrectResult": null,
+    	"incorrectEffect": null
+    },
+    {"ID": 2,
+    	"effect": "{_setfield question visible:&false}[The chicken runs away because it is obviously on its way to ",
+    	"playerStatement": null, 
+    	"NPCStatement": null, 
+    	"playerPrompt": null,
+    	"playerInputResults": null,
+    	"losable": false,
+    	"incorrectResult": null,
+    	"incorrectEffect": null
+    }
+    #etc. for the whole conversation
+ ]
+}

@@ -13,13 +13,15 @@ public class CommandParser {
 	private boolean objectIsVague, indirectObjectIsVague;
 	private boolean hasMultipleWords;
 
-	public static final Set<Character> SPECIAL_PUNCTUATION=new HashSet<Character>(Arrays.asList('!', ' ', '_', '#', '&', ':', '-', '[', ']', '"', '^'));
+	public static final Set<Character> SPECIAL_PUNCTUATION=new HashSet<Character>(Arrays.asList('!', '\'', ' ', '-'));
 	//add to SPECIAL_PUNCTUATION as necessary
 	public static Set<String> NON_MOVE_ADDING_VERBS;
+	public static Set<String> TAKE_FIRST_VERBS;
 	//NON_MOVE_ADDING_VERBS can't be final, but should not be changed outside of the constructor!
 
 	public CommandParser() {
 		NON_MOVE_ADDING_VERBS=new HashSet<String>();
+		TAKE_FIRST_VERBS=new HashSet<String>();
 		commands=new HashMap<String, List<String>>();
 		keywords=new HashMap<String, List<String>>();
 		IOquestionWords=new HashMap<String, String>();
@@ -56,12 +58,20 @@ public class CommandParser {
 						toAdd=toAdd.substring(1);
 						NON_MOVE_ADDING_VERBS.add(toAdd);
 					}
+					else if(toAdd.charAt(0)=='>') {
+						toAdd=toAdd.substring(1);
+						TAKE_FIRST_VERBS.add(toAdd);
+					}
 					commands.put(toAdd, listOfSynonyms);
 				}
 				else {
 					if(toAdd.charAt(0)=='=') {
 						toAdd=toAdd.substring(1);
 						NON_MOVE_ADDING_VERBS.add(toAdd);
+					}
+					else if(toAdd.charAt(0)=='>') {
+						toAdd=toAdd.substring(1);
+						TAKE_FIRST_VERBS.add(toAdd);
 					}
 					commands.put(toAdd, new LinkedList<String>());
 				}
@@ -93,12 +103,14 @@ public class CommandParser {
 	}
 
 	public void parse(String str, boolean isUserInput) {
-		lastVerb=verb;
-		lastObject=object;
-		lastIndirectObject=indirectObject;
-		lastObjectName=objectName;
-		lastIndirectObject=indirectObject;
-		lastIndirectObjectName=indirectObjectName;
+		if(verb!=null&&verb.length()>0&&verb.charAt(0)!='_') {
+			lastVerb=verb;
+			lastObject=object;
+			lastIndirectObject=indirectObject;
+			lastObjectName=objectName;
+			lastIndirectObject=indirectObject;
+			lastIndirectObjectName=indirectObjectName;
+		}
 		verb=null;
 		objectName=null;
 		object=null;
@@ -118,6 +130,13 @@ public class CommandParser {
 			lookingJustForObject=false;
 			lookingJustForObjectAdjective=false;
 			return;
+		}
+		if(isUserInput) {
+			str=removeExtraCharacters(str); //SANITIZE THE INPUTS!!!!!
+			if(str.equals("")) {
+				Main.game.getView().println("Try communicating with words rather than symbols and punctuation.");
+				return;
+			}
 		}
 		String[] words=str.split(" ");
 		hasMultipleWords=words.length>1;
@@ -151,7 +170,6 @@ public class CommandParser {
 			lookingJustForIOAdjective=false;
 		}
 		if(keywords.containsKey(verb)&&!keywords.get(verb).contains("\"")&&str.charAt(0)!='_') {
-			str=removeExtraCharacters(str);
 			words=str.split(" ");
 		}
 		if(lookingJustForObject) {
@@ -266,8 +284,9 @@ public class CommandParser {
 				}
 			}
 			else if(indirectObjectName==null) {
-				if(quoteIsOpen&&!finishedWithObject)
+				if(quoteIsOpen&&!finishedWithObject) {
 					objectName+=" "+word;
+				}
 				else if(keywords.get(verb)!=null&&(keywords.get(verb).contains(word)||keywords.get(verb).contains("*"))) {
 					indirectObjectName=word;
 				}
@@ -277,14 +296,16 @@ public class CommandParser {
 					indirectObjectName=word;
 				}
 				if(indirectObjectName!=null) {
-					if(i>0)
+					if(i>0) {
 						indirectObjectAdjective=words[i-1];
+					}
 					if(objectName.equals(indirectObjectAdjective)) {
 						indirectObjectAdjective=null;
 						indirectObjectIsVague=Main.game.getPlayer().getRoom().containsMultiple(indirectObjectName)&&Main.game.getPlayer().getRoom().getObject(indirectObjectName, indirectObjectAdjective)==null;
 					}
-					else
+					else {
 						break;
+					}
 				}
 			}
 			else if(quoteIsOpen)
@@ -320,14 +341,22 @@ public class CommandParser {
 				if(lookingJustForIO&&words.length>0)
 					indirectObjectName=words[0];
 				for(int i=2; i<words.length; i++) {
-					if(!words[i].equals("with")&&!words[i].equals("to")&&!words[i].equals("about")) {
+					if(!words[i].equals("with")&&!words[i].equals("to")&&!words[i].equals("about")&&!words[i].equals("at")) {
 						indirectObjectName=words[i];
 					}
 				}
 			}
 		}
-		if(keywords.get(verb).contains("\"")&&str.contains(" "))
-			objectName=str.substring(str.indexOf(" ")+1);
+		if(keywords.get(verb).contains("\"")&&str.contains(" ")) {
+			//then just take everything after the verb as the object, e.g. for "enter oak tree" (multi-word objects that can't necessarily be seen from the current room)
+			objectName="";
+			for(int i = startIndex; i < words.length; i++) {
+				objectName += " " + words[i];
+			}
+			if(!objectName.isEmpty()) {
+				objectName = objectName.substring(1);
+			}
+		}
 		int potentialDirection=Main.game.getPlayer().getRoom().getEquivalentDirection(verb, object, indirectObject);
 		if(potentialDirection==-1)
 			potentialDirection=Main.game.getPlayer().getRoom().getEquivalentDirection(verb+" "+str.substring(str.indexOf(" ")+1));
@@ -357,34 +386,21 @@ public class CommandParser {
 	}
 
 	private String removeExtraCharacters(String str) {
-		//remove extra whitespace
-		str=str.trim();
-		while(str.contains("  "))
-			str=str.replace("  ", " ");
-		//remove unnecessary articles
-		while(str.contains(" a "))
-			str=str.replace(" a ", " ");
-		while(str.contains(" an "))
-			str=str.replace(" an ", " ");
-		while(str.contains(" the "))
-			str=str.replace(" the ", " ");
-		if(str.length()>2&&str.substring(str.length()-2, str.length()).equals(" a"))
-			str=str.substring(0, str.length()-2);
-		else if(str.length()>3&&str.substring(str.length()-3, str.length()).equals(" an"))
-			str=str.substring(0, str.length()-3);
-		else if(str.length()>4&&str.substring(str.length()-4, str.length()).equals(" the"))
-			str=str.substring(0, str.length()-4);
-		if(str.length()>2&&str.substring(0, 2).equals("a "))
-			str=str.substring(2);
-		else if(str.length()>3&&str.substring(0, 3).equals("an "))
-			str=str.substring(3);
-		else if(str.length()>4&&str.substring(0, 4).equals("the "))
-			str=str.substring(4);
+		String[] wordsToRemove=new String[]{"an", "a", "the"};
+		for(int i=0; i<wordsToRemove.length; i++) {
+			str=str.replace(" "+wordsToRemove[i]+" ", " ");
+			if(str.startsWith(wordsToRemove[i]+" "))
+				str=str.substring(wordsToRemove[i].length());
+			if(str.endsWith(" "+wordsToRemove[i]))
+				str=str.substring(0, str.length()-wordsToRemove[i].length());
+		}
+		str=str.replace("  ", " ").trim();
+
 		char[] originalChars=str.toCharArray();
 		char[] newChars=new char[originalChars.length];
 		//remove unnecessary punctuation
 		for(int readIndex=0, writeIndex=0; readIndex<originalChars.length; readIndex++) {
-			if((originalChars[readIndex]>='a'&&originalChars[readIndex]<='z')||(originalChars[readIndex]>='0'&&originalChars[readIndex]<='9')||CommandParser.SPECIAL_PUNCTUATION.contains(originalChars[readIndex])) {
+			if((originalChars[readIndex]>='a'&&originalChars[readIndex]<='z')||(originalChars[readIndex]>='0'&&originalChars[readIndex]<='9')||(CommandParser.SPECIAL_PUNCTUATION.contains(originalChars[readIndex]))) {
 				newChars[writeIndex]=originalChars[readIndex];
 				writeIndex++;
 			}
@@ -402,6 +418,18 @@ public class CommandParser {
 			return "Please enter a command.";
 	}
 
+	public void revertToLastCommand() {
+		verb=lastVerb;
+		lastVerb=null;
+		object=lastObject;
+		lastObject=null;
+		objectName=lastObjectName;
+		lastObjectName=null;
+		indirectObject=lastIndirectObject;
+		lastIndirectObject=null;
+		indirectObjectName=lastIndirectObjectName;
+	}
+
 	public TAObject getObject() {
 		return object;
 	}
@@ -413,7 +441,7 @@ public class CommandParser {
 	public String getObjectName() {
 		return objectName;
 	}
-	
+
 	public String getObjectNameWithArticle() {
 		String toReturn=null;
 		if(objectName!=null) {
@@ -429,7 +457,7 @@ public class CommandParser {
 	public String getIndirectObjectName() {
 		return indirectObjectName;
 	}
-	
+
 	public String getIndirectObjectNameWithArticle() {
 		String toReturn=null;
 		if(indirectObjectName!=null) {
@@ -445,7 +473,7 @@ public class CommandParser {
 	public String getObjectAdjective() {
 		return objectAdjective;
 	}
-	
+
 	public String getObjectAdjectiveWithArticle() {
 		String toReturn=null;
 		if(objectAdjective!=null) {
@@ -461,7 +489,7 @@ public class CommandParser {
 	public String getIndirectObjectAdjective() {
 		return indirectObjectAdjective;
 	}
-	
+
 	public String getIndirectObjectAdjectiveWithArticle() {
 		String toReturn=null;
 		if(indirectObjectAdjective!=null) {
@@ -480,6 +508,14 @@ public class CommandParser {
 
 	public boolean isLookingJustForObjectAdjective() {
 		return lookingJustForObjectAdjective;
+	}
+
+	public boolean isLookingJustForIO() {
+		return lookingJustForIO;
+	}
+
+	public boolean isLookingJustForIOAdjective() {
+		return lookingJustForIOAdjective;
 	}
 
 	public boolean justLookedJustForObject() {
@@ -545,12 +581,23 @@ public class CommandParser {
 	public String getIOPreposition(String verb) {
 		return IOprepositions.get(verb);
 	}
-	
+
 	public TAObject getLastObject() {
 		return lastObject;
 	}
-	
+
 	public TAObject getLastIndirectObject() {
 		return lastIndirectObject;
+	}
+	
+	public String getLastCommand() {
+		String toReturn = lastVerb;
+		if(lastObject != null) {
+			toReturn += " " + lastObject.getFullName();
+			if(lastIndirectObject != null) {
+				toReturn += " " + lastIndirectObject.getFullName();
+			}
+		}
+		return toReturn;
 	}
 }

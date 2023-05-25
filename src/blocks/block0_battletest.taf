@@ -1,0 +1,4 @@
+0
+1
+{"name":"test1","description":"There is nothing to see here.","ID":0,"adjacentIDs":[1,null,null,null,null,null],"weapons":[{"name":"sword","description":"It is a sword.","damage":4,"numAttacks":1,"accuracy":0.8,"rangeSlope":0.75,"structure":"SLASH","isASpell":false, takeable:true, isPrinted:true}]}
+{"name":"Battle Room","description":"This is where you battle.","ID":1,"adjacentIDs":[null,0,null,null,null,null],"NPCs":[{"name":"wright","adjective":"phoenix","description":"He is Phoenix Wright!!!","genderPronoun":"he","otherNames":["phoenix"],"battleMusicName":"normalBattle.mp3","proximity":3,"strength":4,"intelligence":9001,"speed":5,"HP":9001,"weapons":[{"name":"fists","damage":3,"accuracy":0.75,"rangeSlope":0.5,"numAttacks":1,"structure":"BLUNT","isASpell":false},{"name":"bow","damage":2,"accuracy":0.8,"rangeSlope":0.075,"numAttacks":1,"structure":"PIERCE","isASpell":false}]}]}

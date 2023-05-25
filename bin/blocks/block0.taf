@@ -1,21 +1,648 @@
 0
 15
-{"name":"Pasture","description":"A sprawling grass meadow that becomes a wheat field at the north end but seems to continue endlessly in the south (and to think you walked all the way here!). There is a small house to the east and a forest to the west. A large oak tree looms over the house. The dirt here is quite soft.","ID":0,"adjacentIDs":[3,0,1,4,2,5],"soundName":"beginning.mp3","verbEffects":[["south","{_donothing}[There's no sense going back the way you came. Besides, there's nothing of interest in the southern part of the pasture.]"]],"directionEquivalents":[null,null,["enter house"],null,["climb tree"],null],"otherNames":["meadow"],"staticObjects":[{"name":"sickle","description":"A steel sickle that looks like it has seen a lot of use.","adjective":"steel"},{"name":"forest","description":"There is an expansive and lush forest in the west.","takeable":false,"isPrinted":false},{"name":"tree","adjective":"oak","description":"A massive oak tree that looks to be about 60 feet high. It has plenty of sturdy branches along its trunk.","takeable":false,"isPrinted":false,"otherNames":["oak"]},{"name":"house","adjective":"small","description":"A small house neatly situated underneath the tree. It appears to be falling into disrepair.","takeable":false,"isPrinted":false},{"name":"field","adjective":"wheat","otherNames":["wheat"],"description":"There is a large field of wheat that is ready to be harvested to the north.","takeable":false,"isPrinted":false}],"NPCs":[],"dynamicObjects":[],"chests":[]}
-{"name":"House","description":"A one room house that seems like it has been abandoned for some time. It is sparsely furnished except for a large oak desk in the corner. The walls are covered with maps. This is your master's house, and its presently barren state has you quite concerned.","ID":1,"adjacentIDs":[null,null,null,0,null,null],"soundName":"emptyHouse.mp3","verbEffects":[["take small matchbook", "{_donothing}[You should really take those letters with you, too. Type \"take all\" to take everything in the room or type \"empty desk\" to take everything in the desk.]"],["take crumpled letters","{_removeverbeffect take small matchbook},{_removeverbeffect take all},{_removeverbeffect take crumpled letters},{take crumpled letters}"],["take all","{_removeverbeffect take small matchbook},{_removeverbeffect take crumpled letters},{_removeverbeffect take all},{take all}"],["take map", "{_removeverbeffect take map}{_removeverbeffect west}{take map}{_addmapbutton}{_setfield map isPrinted:&true}{_setfield map otherNames:null}[Type \"map\" or \"m\" to view the map.]"],["west","{_donothing}[One particularly interesting map keeps drawing you back to it.]"]],"staticObjects":[{"name":"map","description":"A very old map drawn on parchment. Type \"map\" or \"m\" to view the map.","otherNames":["maps"],"isPrinted":false}],"dynamicObjects":[],"chests":[{"name":"desk","adjective":"oak","descriptions":["","An antique oak desk that you used to spend a lot of time working at. All of its drawers are a bit loose.", "An antique oak desk that you used to spend a lot of time working at. All of its drawers are open."],"otherNames":["drawer","drawers"],"takeable":false,"isPrinted":false,"state":1,"commands":[[],["open|+[The desk's drawers creak but reluctantly open.]||null|||null||||true"],["close|-[You gently close all the drawers in the desk.]||null|||null||||true"]],"dynamicObjects":[{"name":"matchbook","description":"A small book of matches with EV printed on the front.","adjective":"small","otherNames":["match","matches"],"state":0,"numStates":1,"commands":[["light|=[You light a match but it quickly goes out.]||null|||null||||true"]]},{"name":"letters","description":"A few crumpled up letters addressed to your master. All but one appear to be written in the same handwriting.","adjective":"crumpled","otherNames":["letter","note","notes"],"isPlural":true,"state":0,"numStates":1,"commands":[["read|=[The letters say... (finish this later! This could be integral to the plot)]||null|||null||||true"]]}]}]}
-{"name":"Treetop","description":"The top of the tall oak tree. It is about 60 feet above the ground, but you feel like you can see for miles.","ID":2,"adjacentIDs":[null,null,null,null,null,0],"soundName":"beginning.mp3","directionEquivalents":[null,null,null,null,null,["climb tree"]],"verbEffects":[["jump","[You jump on the top of the tree, but the branches snap when you land on them. You fall 60 feet and die on impact.]{_die}"]],"otherNames":["tree", "oak tree", "oak"],"staticObjects":[],"dynamicObjects":[{"name":"lantern","descriptions":["A brass lantern filled with fuel. It is not lit.", "A brass lantern filled with fuel. Its light is bright enough to illuminate even pitch dark spaces."],"adjective":"brass","state":0,"numStates":2,"commands":[["light|+[You strike a match and light the lantern. It starts giving off bright light immediately.]||small|||matchbook||||true"],["extinguish|-[You blow out the lantern's flame. It is no longer giving off light.]||null|||null||||true"]]}],"chests":[]}
-{"name":"Wheat Field","description":"A large field of wheat ready to be harvested. Just standing here brings back memories of working long days with your former master. There is a well worn path that goes from north to south.","otherNames":["field"],"ID":3,"adjacentIDs":[13,0,null,null,null,null],"soundName":"beginning.mp3","staticObjects":[],"dynamicObjects":[],"chests":[{"name":"wheat","descriptions":["","There is an especially tall patch of wheat growing on the side of the path.", "A freshly harvested patch of wheat. It has a crate in the middle of the stalks of wheat."],"otherNames":["grain"],"takeable":false,"isPrinted":false,"state":1,"commands":[[],["harvest|+[You neatly cut down several stalks of wheat with one swing and see a wooden crate in the middle of the patch.]||null|||null||||true","cut|+[You neatly cut down several stalks of wheat with one swing and see a wooden crate in the middle of the patch.]||steel|||sickle||||true"],[]],"chests":[{"name":"crate","adjective":"wooden","descriptions":["","A sturdy wooden crate that is nailed shut.", "A wooden crate with the front pried open."],"otherNames":["box"],"takeable":false,"isPrinted":false,"state":1,"commands":[[],["open|+[You wedge the crowbar between two wooden planks and manage to pry the front of the crate open.]||heavy|||crowbar||||true"],[]],"staticObjects":[{"name":"shovel","description":"A pointed shovel with a wooden shaft. The letters EV are engraved on the handle.","otherNames":["spade"]}]}]}]}
-{"name":"Forest","description":"A dense forest packed with trees that thins out in the east. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.","otherNames":["tree","trees"],"ID":4,"adjacentIDs":[8,12,0,10,null,null],"soundName":"beginning.mp3","staticObjects":[],"dynamicObjects":[],"chests":[]}
-{"name":"Tunnel","description":"A narrow tunnel lined with roots. It extends into darkness in the east but light shines in through the exit above you.","ID":5,"adjacentIDs":[null,null,6,null,0,null],"soundName":"beginning.mp3","staticObjects":[{"name":"roots","description":"Many roots line the curved walls of the tunnel like ribs in a rib cage.","otherNames":["root"],"takeable":false,"isPrinted":false}],"dynamicObjects":[],"chests":[]}
-{"name":"Tunnel","description":"The east end of the tunnel. Roots make going further east impossible. There are stairs carved into the earth going up.","ID":6,"adjacentIDs":[null,null,null,5,7,null],"soundName":"beginning.mp3","isDark":true,"darkMessage":"It's too dark to go deeper into the tunnel.","staticObjects":[{"name":"stairs","description":"Stairs dug out of the dirt spiral upwards.","takeable":false,"isPrinted":false},{"name":"roots","description":"The tunnel ends here because the roots on the eastern wall are impenetrable.","otherNames":["root"],"takeable":false,"isPrinted":false}],"dynamicObjects":[],"chests":[]}
-{"name":"Inside of Oak Tree","description":"The inside of the oak tree has been hollowed out and turned into a bedroom, complete with a bed, a large bookcase, and a chest in the corner.","otherNames":["oak","tree","inside","bedroom"],"ID":7,"adjacentIDs":[null,null,null,null,null,6],"soundName":"beginning.mp3","verbEffects":[["sleep bed","[Even though your legs hang off the foot of the bed, you lie down and sleep. That was refreshing.]"],["take gold","[There is more to life than money.]{_donothing}"],["take leather-bound diary","{_removeverbeffect take leather-bound diary}{take diary}[As you take the diary, a hobbit walks in. Apparently this is his house and that is his chest. You find it rather curious that he lives inside of a tree, but you decide not to question him about the matter.]{_setfield hobbit visible:&true}{talk hobbit}"]],"NPCs":[{"name":"hobbit","description":"A friendly hobbit whom you met inside the oak tree. He is wearing a green vest and brown shorts.","visible":false,"isPrinted":false,"conversationRooms":[7],"conversationStarters":[[talk|null||null|||true]]}],"staticObjects":[{"name":"backpack","description":"A large backpack that holds all of your possessions. Type \"inventory\" or \"i\" to see what it contains.","visible":false},{"name":"bed","description":"A very comfortable looking bed that is for someone much shorter than you.","takeable":false,"isPrinted":false},{"name":"bookcase","description":"A large bookcase crammed with books that are written in an ancient elvish language.","otherNames":["book","books"],"takeable":false,"isPrinted":false}],"dynamicObjects":[],"chests":[{"name":"chest","adjective":"wooden","descriptions":["A large wooden chest that is securely locked.","A closed wooden chest with the dirty key stuck in the lock.","An opened wooden chest with the dirty key stuck in the lock."],"otherNames":["trunk"],"takeable":false,"isPrinted":false,"state":0,"commands":[["unlock|+[The chest reluctantly unlocks, and the dirty key sticks in the lock.]{_delete diry key}||dirty|||key||||true"],["open|+[The lid of the chest easily swings open.]||null|||null||||true"],["close|-[You firmly close the wooden chest.]||null|||null||||true"]],"staticObjects":[{"name":"coins","adjective":"gold","description":"There are piles of gold coins in the chest. They are not yours.","otherNames":["gold"],"isPlural":true,"takeable":false},{"name":"clothes","adjective":"small","description":"The clothes are very soft but they are too small for you.","otherNames":[],"isPlural":true,"takeable":false},{"name":"diary","adjective":"leather-bound","description":"A leather-bound, handmade diary. \"EV\" is embossed on the cover.","otherNames":["journal"]}]}]}
-{"name":"Forest","description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.","otherNames":["tree","trees"],"ID":8,"adjacentIDs":[null,4,null,9,null,null],"soundName":"beginning.mp3","verbEffects":[["climb tree","{_donothing}[None of the trees here are suitable for climbing.]"],["north","{_donothing}[The forest gets too thick to continue north.]"],["east","{_donothing}[The forest gets too thick to continue east.]"]],"staticObjects":[],"dynamicObjects":[],"chests":[]}
-{"name":"Forest","description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.","otherNames":["tree","trees"],"ID":9,"adjacentIDs":[null,10,8,null,null,null],"soundName":"beginning.mp3","verbEffects":[["climb tree","{_donothing}[None of the trees here are suitable for climbing.]"],["north","{_donothing}[The forest gets too thick to continue north.]"],["west","{_donothing}[The forest gets too thick to continue west.]"]],"staticObjects":[],"dynamicObjects":[],"chests":[]}
-{"name":"Forest","description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.","otherNames":["tree","trees"],"ID":10,"adjacentIDs":[9,11,4,null,null,null],"soundName":"beginning.mp3","verbEffects":[["climb tree","{_donothing}[None of the trees here are suitable for climbing.]"],["west","{_donothing}[The forest gets too thick to continue west.]"]],"staticObjects":[],"dynamicObjects":[],"chests":[]}
-{"name":"Forest","description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground. You see a squirrel peeking its head out of a hollow in the bark on one of the trees.","otherNames":["trees"],"ID":11,"adjacentIDs":[10,null,12,null,null,null],"soundName":"beginning.mp3","verbEffects":[["climb tree","{_donothing}[None of the trees here are suitable for climbing.]"],["south","{_donothing}[The forest gets too thick to continue south.]"],["west","{_donothing}[The forest gets too thick to continue west.]"]],"staticObjects":[],"dynamicObjects":[],"chests":[{"name":"hollow","adjective":"squirrels'","descriptions":["","", "There is a natural hollow in a tree's bark that is large enough to house small animals. Squirrels are living in it right now."],"otherNames":["bark","squirrel","tree"],"takeable":false,"isPrinted":false,"state":1,"commands":[[],["examine|+[There is a natural hollow in a tree's bark that is large enough to house small animals. Squirrels are living in it right now. Upon closer examination, it appears that there is a small metal object inside the hollow as well.]||null|||null||||true"],[]],"staticObjects":[{"name":"key","description":"A small key that is coated in dirt from being in the hollow in the bark for so long.","adjective":"dirty","otherNames":[]},{"name":"squirrels","description":"A family of adorable squirrels lives inside the hollow.","adjective":"cute",takeable:"false","isPlural":true,"otherNames":[]}]}]}
-{"name":"Forest","description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.","otherNames":["tree","trees"],"ID":12,"adjacentIDs":[4,null,null,11,null,null],"soundName":"beginning.mp3","verbEffects":[["climb tree","{_donothing}[None of the trees here are suitable for climbing.]"],["south","{_donothing}[The forest gets too thick to continue south.]"],["east","{_donothing}[The forest gets too thick to continue east.]"]],"staticObjects":[],"dynamicObjects":[],"chests":[]}
-{"name":"Path","description":"The north end of the path in the wheat field. There is a barn to the east. There is a chicken crossing the road.","ID":13,"adjacentIDs":[null,3,14,null,null,null],"soundName":"beginning.mp3","staticObjects":[],"dynamicObjects":[],"chests":[], "NPCs":[{"name":"chicken","description":"","conversationStarters":[["talk|null||null|||true"]],"conversationRooms":[13],"isPrinted":false}],"enterEffect":"{_removeentereffect}{_setfield path \"description:The north end of the path in the wheat field. There is a barn to the east. There was a chicken crossing the road here earlier.\"}{talk chicken}"}
-{"name":"Barn","description":"Your master's old barn, which has now no animals inside. A lone haystack stands against the wall. You fondly recall days when you and your master would spend hours just talking while sitting in here with the animals.","ID":14,"adjacentIDs":[null,null,null,13,null,null],"soundName":"beginning.mp3","staticObjects":[{"name":"crowbar","adjective":"heavy","description":"A very heavy crowbar that could easily pry apart boards."}],"dynamicObjects":[],"chests":[{"name":"haystack","adjective":"lone","descriptions":["","A large haystack with excellent posture. Something within the haystack catches the light and shines briefly.", "A large haystack that is slumping somewhat."],"otherNames":["hay","stack"],"takeable":false,"isPrinted":false,"state":1,"commands":[[],["search|+[You rummage through the haystack and discover a small needle. Impressive!]||null|||null||||true"],[]],"staticObjects":[{"name":"needle","description":"A shiny needle. It is amazing that you found this in the haystack.","adjective":"shiny","otherNames":["pin"]}]}]}
-{"name":"Secret Passageway","description":"A tiny crawlway that was concealed behind some roots. The hobbit's home is to the north, and the exit is to the west.","ID":15,"adjacentIDs":[6,null,null,16,null,null],"soundName":"beginning.mp3","staticObjects":[],"dynamicObjects":[],"chests":[]}
+{"ID": 0,
+ "name": "{color 238,203,173 0,0,0}Pasture",
+ "description": "A sprawling grass meadow that becomes a wheat field at the north end but seems to continue endlessly in the south (and to think you walked all the way here!). Your master's thatched roof cottage is to the east with a large oak tree looming overhead. There is a forest to the west, and it's that lovely time of year when the leaves are just beginning to display their crisp autumn colors. The dirt here is quite soft.",
+ "adjacentIDs": [3,null,1,4,2,5],
+ "soundName": "beginning.mp3",
+ "verbEffects": [
+ 	["south","{_donothing}[There's no sense in going back the way you came. Besides, there's nothing of interest in the southern part of the pasture.]"]
+ ],
+ "directionEquivalents": [null,null,null,null,["climb tree"],null],
+ "otherNames": ["meadow"],
+ "staticObjects": [
+ 	{"name": "backpack",
+ 	 "description": "It's large backpack that holds all of your possessions. You can feel its weight resting comfortably on your shoulders.","takeable":true
+ 	},
+ 	{"name": "sickle",
+ 	 "description": "A steel sickle that looks like it has seen a lot of use.",
+ 	 "adjective": "steel",
+ 	 "takeable": true,
+ 	 "isPrinted": true
+ 	},
+ 	{"name": "forest",
+ 	 "description": "There is an expansive and lush forest in the west.",
+ 	 "takeable": false,
+ 	 "isPrinted": false
+ 	},
+ 	{"name": "tree",
+ 	 "adjective": "oak",
+ 	 "description": "A massive oak tree that looks to be about 60 feet high. It has plenty of sturdy branches along its trunk, which makes it very suitable for climbing.",
+ 	 "takeable": false,
+ 	 "isPrinted": false,
+ 	 "otherNames": ["oak"]
+ 	},
+ 	{"name": "cottage",
+ 	 "otherNames": ["house"],
+ 	 "description": "It's your master's house! It is a small cottage with white walls and a brown thatched roof that is neatly situated underneath the tree. Don't be shy, knock on the door!",
+ 	 "takeable": false,
+ 	 "isPrinted": false
+ 	},
+ 	{"name": "field",
+ 	 "adjective": "wheat",
+ 	 "otherNames": ["wheat"],
+ 	 "description": "There is a large field of wheat that is ready to be harvested to the north.",
+ 	 "takeable": false,
+ 	 "isPrinted": false
+ 	 }
+ ],
+ "NPCs":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 1,
+ "name": "Cottage",
+ "otherNames": ["house","home"],
+ "description": "Your master's cottage is comprised of one large but cozy room with wood and stone walls that are cluttered with maps. The windows let plenty of light into the house, making interior lighting unnecessary apart from the fireplace built into a wall. It is sparsely furnished, with your master's large oak desk beside the fireplace, a bed on the opposite wall, and a stove with a table and chairs in the corner. A soft rug rests neatly in the center of the wooden floor, completing the sense of order within the cottage--except for your master's absence.",
+ "adjacentIDs": [null,null,null,0,null,null],
+ "soundName": "beginning.mp3",
+ "verbEffects": [
+ 	["take small matchbook", "{_removeverbeffect take small matchbook}{take matchbook}[You should really take those letters with you, too. Type \"take all\" to take everything in the room or type \"empty desk\" to take everything in the desk.]"],
+ 	["take crumpled letters","{_removeverbeffect take small matchbook},{_removeverbeffect take crumpled letters},{_removeverbeffect read crumpled letters},{take crumpled letters}"],
+ 	["take map", "{_removeverbeffect take map}{_removeverbeffect west}{take map}{_addmapbutton}{_setfield map isPrinted:&true}{_setfield map otherNames:null}[Type \"map\" or \"m\" to view the map. The button in the lower left corner is also there for your convenience.]"],
+ 	["west","{_donothing}[One particularly interesting map keeps drawing you back to it.]"]
+ ],
+ "staticObjects": [
+ 	{"name": "map",
+ 	 "description": "A very old map drawn on parchment. Type \"map\" or \"m\" to view the map.",
+ 	 "otherNames": ["maps"],
+ 	 "isPrinted": false,
+ 	 "takeable": true,
+ 	 "commands": [
+ 	 	["read","{map}"]
+ 	 ]
+ 	},
+ 	{"name": "rug",
+ 	 "otherNames": ["mat","carpet"],
+ 	 "adjective": "soft",
+ 	 "description": "A soft and simple rug that complements the rest of the room with its welcoming appearance.",
+ 	 "commands": [
+ 	 	["move","[You move the rug to reveal more hardwood floor. What did you expect to find, a trapdoor?]"]
+ 	 ]
+ 	},
+ 	{"name": "window",
+ 	 "otherNames": ["windows"],
+ 	 "description": "It's a beautiful day. Go outside and experience it for yourself!"
+ 	},
+ 	{"name": "bed", 
+ 	 "adjective": "unmade",
+ 	 "description": "The bed is empty and unmade. Your master never was good about making his bed."
+ 	},
+ 	{"name": "stove",
+ 	 "otherNames": ["table","chair","chairs"],
+ 	 "description": "The kitchen area is where you used to eat nearly all of your meals during your apprenticeship."
+ 	},
+ 	{"name": "fireplace",
+ 	 "otherNames": ["hearth"],
+ 	 "description": "A stone fireplace that provides light and heat during the nighttime. It is currently full of ashes and seems like it hasn't seen any use in some time. You and your master had some of your best conversations sitting on the rug in front of the fireplace's soft flames."
+ 	}
+ ],
+ "chests": [
+ 	{"name": "desk",
+ 	 "adjective": "oak",
+ 	 "descriptions": [
+ 	 	"",
+ 	 	"An antique oak desk that you used to spend a lot of time working at. All of its drawers are a bit loose.",
+ 	 	"An antique oak desk that you used to spend a lot of time working at. All of its drawers are open."
+ 	 ],
+ 	 "otherNames": ["drawer","drawers"],
+ 	 "takeable":false,
+ 	 "isPrinted": false,
+ 	 "state": 1,
+ 	 "commands": [
+ 	 	[],
+ 	 	[
+ 	 		["open oak desk", "+[The desk's drawers creak but reluctantly open.]{_donothing}"]
+ 	 	],
+ 	 	[
+ 	 		["close desk", "-[You gently close all the drawers in the desk.]{_donothing}"]
+ 	 	]
+ 	 ],
+ 	 "staticObjects": [
+ 	 	{"name": "matchbook",
+ 	 	 "description": "A small book of matches with EV printed on the front.",
+ 	 	 "adjective": "small",
+ 	 	 "takeable": true,
+ 	 	 "otherNames": ["match","matches"],
+ 	 	 "commands": [
+ 	 	 	["light", "[You light a match but it quickly goes out.]"]
+ 	 	 ]
+ 	 	},
+ 	 	{"name": "letters",
+ 	 	 "description": "A few crumpled up letters addressed to your master. All but one appear to be written in the same handwriting. Type \"read letters\" to read their contents.",
+ 	 	 "adjective": "crumpled",
+ 	 	 "otherNames": ["letter","note","notes"],
+ 	 	 "takeable": true,
+ 	 	 "isPlural": true,
+ 	 	 "commands": [
+ 	 	 	["read", "[The letters say... (finish this later! This could be integral to the plot)]"]
+ 	 	 ]
+ 	 	}
+ 	 ]
+ 	}
+ ],
+ "dynamicObjects": []
+}
+
+{"ID": 2,
+ "name": "Treetop",
+ "description": "The top of the tall oak tree. It is only about 60 feet above the ground, but you feel like you can see for miles. An unlit brass lantern is hanging on the tree's highest branch.",
+ "adjacentIDs": [null,null,null,null,null,0],
+ "soundName": "beginning.mp3",
+ "directionEquivalents": [null,null,null,null,null,["climb tree"]],
+ "verbEffects":[
+ 	["jump", "[You jump on the top of the tree, but the branches snap when you land on them. You fall 60 feet and die on impact. How foolish of you.]{_die}"],
+ 	["take brass lantern", "{_removeverbeffect take brass lantern}{take brass lantern}{_setfield treetop \"description:The top of the tall oak tree. It is only about 60 feet above the ground, but you feel like you can see for miles.\"}"]
+ ],
+ "otherNames": ["tree", "oak tree", "oak"],
+ "staticObjects": [],
+ "dynamicObjects": [
+ 	{"name": "lantern",
+ 	 "descriptions": [
+ 	 	"A brass lantern filled with fuel. It is not lit.",
+ 	 	"A brass lantern filled with fuel. Its light is bright enough to illuminate even pitch dark spaces."
+ 	 ],
+ 	 "adjective": "brass",
+ 	 "isPrinted": false,
+ 	 "state": 0,
+ 	 "numStates": 2,
+ 	 "commands": [
+ 	 	[
+ 	 		["light brass lantern small matchbook", "+[You strike a match and light the lantern. It starts giving off bright light immediately.]{_donothing}"]
+ 	 	],
+ 	 	[
+ 	 		["light brass lantern", "=[The brass lantern is already lit.]"],
+ 	 		["extinguish brass lantern", "-[You blow out the lantern's flame. It is no longer giving off light.]{_donothing}"]
+ 	 	]
+ 	 ]
+ 	}
+ ],
+ "chests":[]
+}
+
+{"ID": 3,
+ "name": "Wheat Field",
+ "description": "A large field of golden-brown wheat ready to be harvested. The pasture is to the south and a well worn path through the field continues to the north. Just standing here brings back memories of working long days with your former master.",
+ "otherNames": ["field"],
+ "adjacentIDs": [13,0,null,null,null,null],
+ "soundName": "beginning.mp3",
+ "staticObjects": [],
+ "dynamicObjects": [],
+ "chests": [
+ 	{"name": "wheat",
+ 	 "descriptions": [
+ 	 	"",
+ 	 	"Countless stalks of wheat sway slightly in the gentle breeze. There is an especially tall patch of wheat growing on the side of the path.",
+ 	 	"Countless stalks of wheat sway slightly in the gentle breeze. A freshly harvested patch of wheat beside the path reveals a wooden crate."
+ 	 ],
+ 	 "otherNames": ["grain, stalk, stalks"],
+ 	 "takeable": false,
+ 	 "isPrinted": false,
+ 	 "state": 1,
+ 	 "commands": [
+ 	 	[],
+ 	 	[
+ 	 		["harvest wheat steel sickle/cut wheat steel sickle", "+[You neatly cut down several stalks of wheat with one swing and see a wooden crate in the middle of the patch.]{_donothing}"]
+ 	 	],
+ 	 	[]
+ 	 ],
+ 	 "chests": [
+ 	 	{"name":"crate",
+ 	 	 "adjective": "wooden",
+ 	 	 "descriptions": [
+ 	 	 	"",
+ 	 	 	"A sturdy wooden crate that is nailed shut.",
+ 	 	 	"A wooden crate with the front pried open."
+ 	 	 ],
+ 	 	 "otherNames": ["box"],
+ 	 	 "takeable": false,
+ 	 	 "isPrinted": false,
+ 	 	 "state": 1,
+ 	 	 "commands": [
+ 	 	 	[],
+ 	 	 	[
+ 	 	 		["open wooden crate heavy crowbar", "+[You wedge the crowbar between two wooden planks and manage to pry the front of the crate open.]{_donothing}"]
+ 	 	 	],
+ 	 	 	[]
+ 	 	 ],
+ 	 	 "staticObjects": [
+ 	 	 	{"name":"shovel",
+ 	 	 	 "description":"A pointed shovel with a wooden shaft. The letters EV are engraved on the handle.",
+ 	 	 	 "otherNames":["spade"],
+ 	 	 	 "takeable": true
+ 	 	 	}
+ 	 	 ]
+ 	 	}
+ 	 ]
+ 	}
+ ]
+}
+
+{"ID": 4,
+ "name": "{color 100,175,30 0,0,0}Forest (east side)",
+ "description": "A dense forest packed with trees that thins out in the east. The sun's rays shine through the branches above, and the fluttering leaves cast dancing shadows on the ground below and give the whole area an orange tint. The forest continues to the north, south, and west.",
+ "otherNames": ["forest","trees"],
+ "adjacentIDs": [8,12,0,10,null,null],
+ "directionEquivalents": [null, null, ["exit forest"], null, null, null],
+ "soundName": "beginning.mp3",
+ "verbEffects": [
+ 	["examine tree","{look}"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 5,
+ "name":"{color 64,56,49 255,210,115}Tunnel",
+ "description":"A narrow tunnel lined with roots. It extends into darkness in the east but light shines in through the exit above you.",
+ "adjacentIDs":[null,null,6,null,0,null],
+ "soundName":"beginning.mp3",
+ "staticObjects": [
+ 	{"name":"roots",
+ 	 "description":"Many roots line the curved walls of the tunnel like ribs in a rib cage.",
+ 	 "otherNames":["root"],
+ 	 "takeable":false,
+ 	 "isPrinted":false
+ 	}
+ ],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 6,
+ "name": "{color 64,56,49 255,210,115}Tunnel",
+ "description": "The east end of the tunnel. Roots make going further east impossible. There are stairs carved into the earth going up.",
+ "adjacentIDs": [null,null,null,5,7,null],
+ "soundName": "beginning.mp3",
+ "isDark": true,
+ "darkMessage": "It's too dark to go deeper into the tunnel.",
+ "staticObjects": [
+ 	{"name":"stairs",
+ 	 "description":"Stairs dug out of the dirt spiral upwards.",
+ 	 "takeable":false,
+ 	 "isPrinted":false
+ 	},
+ 	{"name":"roots",
+ 	 "description":"The tunnel ends here because the roots on the eastern wall are impenetrable.",
+ 	 "otherNames":["root"],
+ 	 "takeable":false,
+ 	 "isPrinted":false
+ 	}
+ ],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 7,
+ "name": "Inside of Oak Tree",
+ "description": "The inside of the oak tree has been hollowed out and turned into a bedroom, complete with a bed, a large bookcase, and a chest in the corner.",
+ "otherNames": ["oak","tree","inside","bedroom"],
+ "adjacentIDs": [null,null,null,null,null,6],
+ "soundName": "beginning.mp3",
+ "verbEffects":[
+ 	["read leather-bound diary", "{_removeverbeffect read leather-bound diary}[(First taking the leather-bound diary)]{take diary}"],
+ 	["take leather-bound diary", "{_removeverbeffect take leather-bound diary}{take diary}[As you take the diary, a hobbit walks in. Apparently this is his house and that is his chest. You find it rather curious that he lives inside of a tree, but you decide not to question him about the matter.]{_setfield hobbit visible:&true}{talk hobbit}"]
+ ],
+ "NPCs": [
+ 	{"name":"hobbit",
+ 	 "description":"A friendly hobbit whom you met inside the oak tree. He is wearing a green vest and brown shorts.",
+ 	 "genderPronoun":"he",
+ 	 "visible":false,
+ 	 "isPrinted":false
+ 	}
+ ],
+ "staticObjects": [
+ 	{"name":"bed",
+ 	 "description":"A very comfortable looking bed that is for someone much shorter than you.",
+ 	 "takeable":false,
+ 	 "isPrinted":false
+ 	},
+ 	{"name":"bookcase",
+ 	 "otherNames": ["bookshelf","bookshelves"],
+ 	 "description":"A large bookcase crammed with books that are written in some sort of Elvish language.",
+ 	 "takeable":false,
+ 	 "isPrinted":false
+ 	},
+ 	{"name":"books",
+ 	 "otherNames":["book"],
+ 	 "description":"The books seem interesting, but sadly you can't read them because you don't speak Elvish. Their multicolored bindings add a splash of color to the room",
+ 	 "commands":[
+ 	 	["read", "[You recognize the writing as Elvish, but you can't read it.]"],
+ 	 	["take", "[The books are so neatly arranged that you would actually feel bad taking any of them. You don't have any use for them.]"]
+ 	 ]
+ 	}
+ ],
+ "chests": [
+ 	{"name":"chest",
+ 	 "adjective":"wooden",
+ 	 "descriptions": [
+ 	 	"A large wooden chest that is securely locked.",
+ 	 	"A closed wooden chest with the dirty key stuck in the lock.",
+ 	 	"An opened wooden chest with the dirty key stuck in the lock."
+ 	 ],
+ 	 "otherNames":["trunk"],
+ 	 "takeable":false,
+ 	 "isPrinted":false,
+ 	 "state":0,"commands": [
+ 	 	[
+ 	 		["unlock wooden chest dirty key/open wooden chest dirty key", "+[The chest reluctantly unlocks, and the dirty key sticks in the lock.]{_delete dirty key}{open wooden chest}"],
+ 	 		["open wooden chest heavy crowbar", "=[The boards of the chest are too close together for you to get any leverage with the crowbar. That lock on the front of the chest looks promising, though.]{_donothing}"]
+ 	 	],
+ 	 	[
+ 	 		["open wooden chest", "+[The lid of the chest easily swings open.]{_donothing}"]
+ 	 	],
+ 	 	[
+ 	 		["close wooden chest", "-[You firmly close the wooden chest.]{_donothing}"]
+ 	 	]
+ 	 ],
+ 	 "staticObjects": [
+ 	 	{"name":"coins",
+ 	 	 "adjective":"gold",
+ 	 	 "description":"There are piles of gold coins in the chest. They are not yours.",
+ 	 	 "takeMessage":"There is more to life than money.",
+ 	 	 "otherNames":["gold"],
+ 	 	 "isPlural":true,
+ 	 	 "takeable":false
+ 	 	},
+ 	 	{"name":"clothes",
+ 	 	 "description":"The clothes are very soft but they are too small for you.",
+ 	 	 "takeMessage":"Those clothes aren't yours! How would you feel if somebody came into your house and just started taking your clothes?",
+ 	 	 "otherNames":[],
+ 	 	 "isPlural":true,
+ 	 	 "takeable":false
+ 	 	},
+ 	 	{"name":"diary",
+ 	 	 "adjective":"leather-bound",
+ 	 	 "description":"A leather-bound, handmade diary. \"EV\" is embossed on the cover.",
+ 	 	 "otherNames":["journal"],
+ 	 	 "takeable":true
+ 	 	}
+ 	 ]
+ 	}
+ ],
+ "dynamicObjects":[]
+}
+
+{"ID": 8,
+ "name":"Forest (northeast corner)",
+ "description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.",
+ "otherNames":["forest","tree","trees"],
+ "adjacentIDs":[null,4,null,9,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects": [
+ 	["climb tree", "{_donothing}[None of the trees here are suitable for climbing.]"],
+ 	["north", "{_donothing}[The forest gets too thick to continue north.]"],
+ 	["east", "{_donothing}[The forest gets too thick to continue east.]"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 9,
+ "name":"Forest (northwest corner)",
+ "description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.",
+ "otherNames": ["forest","tree","trees"],
+ "adjacentIDs":[null,10,8,null,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects":[
+ 	["climb tree", "{_donothing}[None of the trees here are suitable for climbing.]"],
+ 	["north", "{_donothing}[The forest gets too thick to continue north.]"],
+ 	["west", "{_donothing}[The forest gets too thick to continue west.]"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 10,
+ "name":"Forest (west side)",
+ "description":"A dense forest packed with trees. You are currently on its western side. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.",
+ "otherNames": ["forest","tree","trees"],
+ "adjacentIDs": [9,11,4,null,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects":[
+ 	["climb tree", "{_donothing}[None of the trees here are suitable for climbing.]"],
+ 	["west", "{_donothing}[The forest gets too thick to continue west.]"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 11,
+ "name":"Forest (southwest corner)",
+ "description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.\n\nYou see a squirrel peeking its head out of a hollow in the bark on one of the trees.",
+ "otherNames": ["forest","trees"],
+ "adjacentIDs": [10,null,12,null,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects":[
+ 	["climb tree", "{_donothing}[None of the trees here are suitable for climbing.]"],
+ 	["south", "{_donothing}[The forest gets too thick to continue south.]"],
+ 	["west", "{_donothing}[The forest gets too thick to continue west.]"],
+ 	["take squirrels' hollow" ,"{_removeverbeffect take squirrels' hollow}[Your hands are fast but the squirrel is faster, and it narrowly escapes out of your reach. Your eyes can't help but follow it as it returns to its hollow.\n\n(Upon examining the hollow)]{examine hollow}"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[
+ 	{"name":"hollow",
+ 	 "otherNames":[
+ 	 	["bark","squirrel","tree"],
+ 	 	["bark","squirrel","tree"],
+ 	 	["bark","tree"]
+ 	 ],
+ 	 "adjective": "squirrels'",
+ 	 "descriptions": [
+ 	 	"",
+ 	 	"",
+ 	 	"There is a natural hollow in a tree's bark that is large enough to house small animals. Squirrels are living in it right now."
+ 	 ],
+ 	 "takeable":false,
+ 	 "isPrinted":false,
+ 	 "state":1,
+ 	 "commands":[
+ 	 	[],
+ 	 	[
+ 	 		["examine squirrels' hollow/search squirrels' hollow", "+{_removeverbeffect take squirrels' hollow}[There is a natural hollow in a tree's bark that is large enough to house small animals. Squirrels are living in it right now. Closer examination reveals that there is a small metal object inside the hollow as well.]"]
+ 	 	],
+ 	 	[]
+ 	 ],
+ 	 "staticObjects":[
+ 	 	{"name":"squirrels",
+ 	  	 "description":"A family of adorable squirrels lives inside the hollow.",
+ 	  	 "adjective":"cute",
+ 	  	 "takeable":false,
+ 	  	 "isPlural":true,
+ 	  	 "isPrinted":false,
+ 	  	 "otherNames":["squirrel"],
+ 	  	 "takeMessage":"The squirrels like their hollow much more than your backpack and refuse to join you."
+ 	 	},
+ 	 	{"name":"key",
+ 	  	 "description":"A small key that is coated in dirt from being in the hollow in the bark for so long.",
+ 	  	 "adjective":"dirty",
+ 	  	 "isPrinted":false,
+ 	  	 "takeable":true,
+ 	  	 "otherNames":[]
+ 	 	}
+ 	 ]
+ 	}
+ ]
+}
+
+{"ID": 12,
+ "name":"Forest (southeast corner)",
+ "description":"A dense forest packed with trees. The fluttering leaves let just enough light through for you to avoid stumbling on the roots that line the ground.",
+ "otherNames":["forest","tree","trees"],
+ "adjacentIDs":[4,null,null,11,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects":[
+ 	["climb tree", "{_donothing}[None of the trees here are suitable for climbing.]"],
+ 	["south", "{_donothing}[The forest gets too thick to continue south.]"],
+ 	["east", "{_donothing}[The forest gets too thick to continue east.]"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
+{"ID": 13,
+ "name":"Path",
+ "description":"The north end of the path in the wheat field. There is a barn to the east. There is a chicken crossing the road.",
+ "adjacentIDs":[null,3,14,null,null,null],
+ "soundName":"beginning.mp3",
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[],
+ "NPCs": [
+ 	{"name":"question",
+ 	 "description":"",
+ 	 "isPrinted":false,
+ 	 "visible":false
+ 	}
+ ],
+ "enterEffect": "{_removeentereffect}{_setfield path \"description:The north end of the path in the wheat field. There is a barn to the east. There was a chicken crossing the road here earlier.\"}{_setfield question visible:&true}[ ]{talk question}"
+}
+
+{"ID": 14,
+ "name":"Barn",
+ "description":"Your master's old barn, which has now no animals inside. A lone haystack stands against the wall. You fondly recall days when you and your master would spend hours just talking while sitting in here with the animals.",
+ "adjacentIDs":[null,null,null,13,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects": [
+ 	["examine lone haystack", "{_removeverbeffect examine lone haystack}{examine lone haystack}{_addverbeffect \"examine lone haystack\" \"{search haystack}\"}"]
+ ],
+ "staticObjects": [
+ 	{"name":"crowbar",
+ 	 "adjective":"heavy",
+ 	 "description":"A very heavy crowbar that could easily pry apart boards.",
+ 	 "takeable":true,
+ 	 "isPrinted":true
+ 	}
+ ],
+ "dynamicObjects":[],
+ "chests": [
+ 	{"name":"haystack",
+ 	 "adjective":"lone",
+ 	 "descriptions": [
+ 	 	"",
+ 	 	"A large haystack with excellent posture. Something within the haystack catches the light and shines briefly.",
+ 	 	"A large haystack that is somewhat slumped over."
+ 	 ],
+ 	 "otherNames":["hay","stack"],
+ 	 "takeable":false,
+ 	 "isPrinted":false,
+ 	 "state":1,
+ 	 "commands":[
+ 	 	[],
+ 	 	[
+ 	 		["search lone haystack/destroy lone haystack/move lone haystack", "+[You rummage through the haystack and discover a small needle. Impressive!]{_removeverbeffect examine lone haystack}"]
+ 	 	],
+ 	 	[]
+ 	 ],
+ 	 "staticObjects": [
+ 	 	{"name":"needle",
+ 	 	 "description":"A shiny needle. It is amazing that you found this in the haystack.",
+ 	 	 "adjective":"shiny",
+ 	 	 "otherNames":["pin"],
+ 	 	 "takeable":true
+ 	 	}
+ 	 ]
+ 	}
+ ]
+}
+
+{"ID": 15,
+ "name":"Secret Passageway",
+ "description":"You are in a tiny passageway that was concealed behind some roots. It is damp but oddly cozy. The hobbit's home is to the north, and the exit is to the west.",
+ "otherNames":["passageway"],
+ "adjacentIDs":[6,null,null,16,null,null],
+ "soundName":"beginning.mp3",
+ "verbEffects":[
+ 	["west", "{_setverbeffect west \"[{color 255,255,255 255,255,255 10}{1500}{color 238,203,173 0,0,0}]{west}\"}[{color 255,255,255 255,255,255 10}After several minutes of traveling through the cramped, winding passageway, you reach the exit and are immediately blinded by the sunlight. The hobbit, on the other hand, seems to be completely unaffected and excitedly looks around at everything before turning to talk to you. (This conversation is not written yet. An error may show up here--I am aware of this bug.)\n{1500}{color 238,203,173 0,0,0}{3500}]{talk hobbit}"]
+ ],
+ "staticObjects":[],
+ "dynamicObjects":[],
+ "chests":[]
+}
+
 -----
-{"name":"door","adjective":"rotting","descriptions":["", "A rotting wooden door that is secured shut. It appears to be the only entrance to the house.", "A smashed door that has fallen off of its hinges."],"otherNames":[],"takeable":false,"state":1,"roomIDs":[0,1],"roomDirections":[2,3],"closedMessages":["The door is secured shut.", "The door is secured shut."],"commands":[[],["open|=[Despite how deteriorated the wood is, the door won't budge. Judging by the door's condition, it seems like some force should get the job done.]||null|||null||||true","destroy|+[You violently smash the door and it collapses in a large cloud of dust.]||null|||null||||true"],[]]}
-{"name":"dirt","adjective":"soft","descriptions":["", "The dirt under the tree is softer than in the rest of the pasture.", "You dug up the dirt to reveal a tunnel."],"otherNames":["ground"],"takeable":false,"state":1,"roomIDs":[0,5],"roomDirections":[5,4],"closedMessages":["You can't go that way.", "The dirt blocks the tunnel's exit."],"commands":[[],["dig|+[After less than a minute of digging, you reveal an underground tunnel. Based on how loose the dirt was, it seems like it is still in use.]||null|||shovel||||true"],[]]}
+
+{"name":"door",
+ "adjective":"flimsy",
+ "descriptions": [
+ 	"A flimsy-looking wooden door that is stuck shut. It is the only entrance to your master's house. Don't be shy, knock on the door!",
+ 	"A flimsy-looking wooden door that is slightly askew within its frame. It has no lock but appears to be stuck shut, and it is the only entrance to your master's house.",
+ 	"A smashed door that has fallen off of its hinges."
+ ],
+ "otherNames":[],
+ "takeable":false,
+ "state":0,
+ "roomIDs":[0,1],
+ "roomDirections":[2,3],
+ "closedMessages": [
+ 	"Even though it has no lock, the flimsy door is stuck shut.",
+ 	"Even though it has no lock, the flimsy door is stuck shut"
+ ],
+ "commands": [
+ 	[
+ 		["knock flimsy door", "+[No response. How odd, your master is always at home this time of year and there is nothing hanging on the door to indicate that he is away. Maybe he's sleeping or somehow didn't hear you.]{_donothing}"],
+ 		["destroy flimsy door/kick flimsy door","=[How rude! This is your master's house... and haven't you ever heard of knocking!?]{_donothing}"],
+ 		["move flimsy door/open flimsy door","=[The door won't budge no matter how hard you pull. Maybe your master will open it for you if you knock.]{_donothing}"]
+ 	],
+ 	[
+ 		["knock flimsy door", "=[You knock on the door once again but still receive no response from inside. Perhaps it's time for some force.]{_donothing}"],
+ 		["open flimsy door", "=[The door is stuck and won't budge. Maybe something more forceful will get you inside.]{_donothing}"],
+ 		["destroy flimsy door/kick flimsy door", "+[You violently smash the door and it collapses in a large cloud of dust. A small wave of guilt comes over you as you realize what you've done.]{_donothing}"]
+ 	],
+ 	[
+ 		["open flimsy door", "=[The flimsy door--or what remains of it--does not require any more opening. You can already get into your master's cottage.]{_donothing}"]
+ 	]
+ ]
+}
+
+{"name":"dirt",
+ "adjective":"soft",
+ "descriptions": [
+ 	"",
+ 	"The dirt under the tree is softer than in the rest of the pasture.",
+ 	"You dug up the dirt to reveal a tunnel."
+ ],
+ "otherNames":["ground"],
+ "takeable":false,
+ "state":1,
+ "roomIDs":[0,5],
+ "roomDirections":[5,4],
+ "closedMessages":[
+ 	"You can't go that way.",
+ 	"The dirt blocks the tunnel's exit."
+ ],
+ "commands":[
+ 	[],
+ 	[
+ 		["dig soft dirt shovel", "+[After less than a minute of digging, you reveal an underground tunnel. Based on how loose the dirt was, it seems like it is still in use.]{_donothing}"]
+ 	],
+ 	[]
+ ]
+}

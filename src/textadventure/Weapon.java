@@ -10,8 +10,14 @@ public class Weapon extends StaticObject {
 	private AttackType type;
 	private boolean isASpell;
 
-	public Weapon(String name, String adjective, String description) {
-
+	public Weapon(int damage, int numAttacks, double accuracy, double rangeSlope, double critSlope, AttackType type, boolean isASpell) {
+		this.damage=damage;
+		this.numAttacks=numAttacks;
+		this.accuracy=accuracy;
+		this.rangeSlope=rangeSlope;
+		this.critSlope=critSlope;
+		this.type=type;
+		this.isASpell=isASpell;
 	}
 
 	public Weapon(JSONObject source) {
@@ -46,6 +52,10 @@ public class Weapon extends StaticObject {
 	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
 		return null;
 	}
+	
+	public String getDescription() {
+		return super.getDescription()+"\nWeapon type: "+getType().toString()+"\nBase damage: "+getDamage()+"\nBase accuracy: "+getAccuracy();
+	}
 
 	public int getDamage() {
 		return damage;
@@ -71,8 +81,11 @@ public class Weapon extends StaticObject {
 		return isASpell;
 	}
 	
-	public int getNumAttack() {
+	public int getNumAttacks() {
 		return numAttacks;
 	}
-
+	
+	public boolean isMelee() {
+		return rangeSlope>=0.45;
+	}
 }

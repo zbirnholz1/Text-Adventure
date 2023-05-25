@@ -1,5 +1,6 @@
 package textadventure;
 import java.util.*;
+
 import org.json.*;
 
 public abstract class TACharacter extends TAObject {
@@ -13,6 +14,7 @@ public abstract class TACharacter extends TAObject {
 	protected Room room;
 	//protected int HP, etc. OR protected int[] stats (which is better?)
 	protected int HP;
+	protected int maxHP;
 	protected int strength;
 	protected int intelligence;
 	protected int speed;
@@ -70,7 +72,19 @@ public abstract class TACharacter extends TAObject {
 			if(source.has("proximity"))
 				proximity=source.getInt("proximity");
 			else
-				proximity=0;
+				proximity=-1;
+			if(proximity>=0) {
+				HP=source.getInt("HP");
+				strength=source.getInt("strength");
+				if(source.has("maxHP"))
+					maxHP=source.getInt("maxHP");
+				else
+					maxHP=strength*10;
+				intelligence=source.getInt("intelligence");
+				speed=source.getInt("speed");
+				if(source.has("armor"))
+					armor=new Armor(source.getJSONObject("armor"));
+			}
 			//attacks=new TreeSet<Weapon>();
 			if(source.has("weapons")) {
 				JSONArray JSONWeapons=source.getJSONArray("weapons");
@@ -111,6 +125,15 @@ public abstract class TACharacter extends TAObject {
 			/*for(TACharacter c:hostileCharacters)
 				obj.accumulate("hostileCharacters", c.getName());*/
 			obj.put("proximity", proximity);
+			if(proximity>=0) {
+				obj.put("HP", HP);
+				obj.put("maxHP", maxHP);
+				obj.put("strength", strength);
+				obj.put("intelligence", intelligence);
+				obj.put("speed", speed);
+				if(armor!=null)
+					obj.put("armor", armor.toJSONObject());
+			}
 			/*for(Weapon w:attacks)
 				obj.accumulate("weapons", w.toJSONObject());*/
 			//TODO stats, money, etc.
@@ -174,6 +197,15 @@ public abstract class TACharacter extends TAObject {
 				return i;
 		return null;
 	}
+	
+	public List<Weapon> getWeapons() {
+		List<Weapon> toReturn=new LinkedList<Weapon>();
+		for(TAObject o:inventory) {
+			if(o instanceof Weapon)
+				toReturn.add((Weapon)o);
+		}
+		return toReturn;
+	}
 
 	public boolean delete(String toDelete) {
 		Iterator<TAObject> iter=inventory.iterator();
@@ -200,6 +232,8 @@ public abstract class TACharacter extends TAObject {
 	}
 
 	public void setRoom(Room newRoom) throws IllegalArgumentException {
+		if(room!=null)
+			room.remove(this);
 		if(newRoom==null)
 			throw new IllegalArgumentException("A TACharacter can't be in a null Room.");
 		room=newRoom;
@@ -219,6 +253,10 @@ public abstract class TACharacter extends TAObject {
 
 	public int getInventorySize() {
 		return inventory.size();
+	}
+	
+	public Set<TAObject> getInventory() {
+		return inventory;
 	}
 
 	public Room getRoom() {
@@ -250,6 +288,10 @@ public abstract class TACharacter extends TAObject {
 	public int getProximity() {
 		return proximity;
 	}
+	
+	public boolean isHostile() {
+		return proximity>0;
+	}
 
 	public int getHP() {
 		return HP;
@@ -258,9 +300,9 @@ public abstract class TACharacter extends TAObject {
 	public void setHP(int newHP) {
 		HP=newHP;
 	}
-	
+
 	public int getMaxHP() {
-		return strength*10;
+		return maxHP;
 	}
 
 	public int getStrength() {
@@ -294,11 +336,11 @@ public abstract class TACharacter extends TAObject {
 	public void setArmor(Armor newArmor) {
 		armor=newArmor;
 	}
-	
+
 	public void takeDamage(int amount) {
-		setHP(Math.max(0, getHP()-amount));
+		setHP(Math.max(0, getHP()-Math.abs(amount)));
 	}
-	
+
 	public void restoreHealth(int amount) {
 		setHP(Math.min(getMaxHP(), HP+amount));
 	}

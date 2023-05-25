@@ -1,12 +1,17 @@
 package textadventure;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
 import org.json.*;
 
 public abstract class TAObject implements Comparable<TAObject> {
-	protected String name, description, adjective;
+	protected String name, description, adjective, takeMessage;
 	protected Set<String> otherNames;
 	protected boolean visible, takeable, isPrinted, isPlural;
+	protected Map<String, String> staticCommands;
 
 	public static final String VOWELS="aeiouAEIOU";
 
@@ -56,6 +61,20 @@ public abstract class TAObject implements Comparable<TAObject> {
 				isPlural=source.getBoolean("isPlural");
 			else
 				isPlural=false;
+			if(source.has("takeMessage"))
+				takeMessage=source.getString("takeMessage");
+			else
+				takeMessage=null;
+			try {
+				if(source.has("commands")&&!(this instanceof DynamicObject)) {
+					staticCommands=new TreeMap<String, String>();
+					JSONArray JSONCommands=source.getJSONArray("commands");
+					for(int i=0; i<JSONCommands.length(); i++) {
+						JSONArray JSONCommand=JSONCommands.getJSONArray(i);
+						staticCommands.put(JSONCommand.getString(0), JSONCommand.getString(1));
+					}
+				}
+			} catch(JSONException e){e.printStackTrace();Main.game.getView().println("Something went wrong: "+e);}
 		} catch(JSONException e){Main.game.getView().println("Something went wrong TAO: "+e);}
 	}
 
@@ -91,14 +110,23 @@ public abstract class TAObject implements Comparable<TAObject> {
 			if(adjective!=null)
 				object.put("adjective", adjective);
 			object.put("visible", visible);
-			if(!takeable)
-				object.put("takeable", takeable);
-			if(!isPrinted)
-				object.put("isPrinted", isPrinted);
+			object.put("takeable", takeable);
+			object.put("isPrinted", isPrinted);
 			if(isPlural)
 				object.put("isPlural", isPlural);
-			if(otherNames!=null) {
+			if(otherNames!=null)
 				object.put("otherNames", otherNames);
+			if(takeMessage!=null)
+				object.put("takeMessage", takeMessage);
+			if(staticCommands!=null&&!(this instanceof DynamicObject)) {
+				JSONArray JSONCommands=new JSONArray();
+				for(String command:staticCommands.keySet()) {
+					JSONArray JSONCommand=new JSONArray();
+					JSONCommand.put(command);
+					JSONCommand.put(staticCommands.get(command));
+					JSONCommands.put(JSONCommand);
+				}
+				object.put("commands", JSONCommands);
 			}
 		} catch (JSONException e) {Main.game.getView().println("Something went wrong: "+e);}
 		return object;
@@ -114,6 +142,10 @@ public abstract class TAObject implements Comparable<TAObject> {
 
 	public String getAdjective() {
 		return adjective;
+	}
+	
+	public String getTakeMessage() {
+		return takeMessage;
 	}
 
 	public boolean isVisible() {
@@ -177,6 +209,10 @@ public abstract class TAObject implements Comparable<TAObject> {
 	public void setAdjective(String adjective) {
 		this.adjective = adjective;
 	}
+	
+	public void setTakeMessage(String takeMessage) {
+		this.takeMessage=takeMessage;
+	}
 
 	public void setIsVisible(boolean visible) {
 		this.visible = visible;
@@ -213,6 +249,8 @@ public abstract class TAObject implements Comparable<TAObject> {
 	}
 
 	public int compareTo(TAObject other) {
+		if(getName()==null&&other.getName()==null) //TODO if any problems arise with RoomBlocks, this is the cause!
+			return 0;
 		if(getName().equals(other.getName())) {
 			if(getAdjective()==null&&other.getAdjective()!=null)
 				return -1;
@@ -225,5 +263,34 @@ public abstract class TAObject implements Comparable<TAObject> {
 		return getName().compareToIgnoreCase(other.getName());
 	}
 
-	public abstract String process(String verb, TAObject otherObject, boolean thisIsDO);
+	public String process(String verb, TAObject otherObject, boolean thisIsDO) {
+		if(staticCommands==null)
+			return null;
+		String expected="";
+		String key="";
+		Iterator<String> iter=staticCommands.keySet().iterator();
+		while(iter.hasNext()) {
+			key=iter.next();
+			if(key.contains(verb)) {
+				if(key.contains("|")) {
+					if(key.substring(0, key.indexOf("|")).contains(verb+"/")||key.substring(0, key.indexOf("|")).contains("/"+verb))
+						expected=key.substring(0, key.indexOf("|"));
+				}
+				else if(key.equals(verb)||key.contains(verb+"/")||key.contains("/"+verb))
+					expected=key;
+				else
+					continue;
+				break;
+			}
+		}
+		if(expected.equals(""))
+			return null;
+		if(otherObject==null)
+			if(key.equals(expected)||key.equals(expected+"|null||null|||"+thisIsDO))
+				return staticCommands.get(key);
+			else
+				return null;
+		else
+			return staticCommands.get(expected+"|"+otherObject.getAdjective()+"||"+otherObject.getName()+"|||"+thisIsDO);
+	}
 }

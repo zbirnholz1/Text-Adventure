@@ -4,20 +4,20 @@ import java.util.*;
 import org.json.*;
 
 public class Room extends TAObject {
-	private Room[] adjacentRooms;
-	private Door[] doors;
-	private boolean visited;
-	//private boolean usedInConversation;
+	protected Room[] adjacentRooms;
+	protected Door[] doors;
+	protected boolean visited;
+	//protected boolean usedInConversation;
 	protected int ID;
-	private Set<TAObject> contents;
-	private Set<StaticObject> staticObjects;
-	private Set<DynamicObject> dynamicObjects;
-	private Set<Chest> chests;
-	private Set<TACharacter> characters;
-	private List<List<String>> directionEquivalents;
-	private String enterEffect, darkMessage;
-	private Map<String, String> verbEffects;
-	private String soundName;
+	protected Set<TAObject> contents;
+	protected Set<StaticObject> staticObjects;
+	protected Set<DynamicObject> dynamicObjects;
+	protected Set<Chest> chests;
+	protected Set<TACharacter> characters;
+	protected List<List<String>> directionEquivalents;
+	protected String enterEffect, darkMessage;
+	protected Map<String, String> verbEffects;
+	protected String soundName;
 
 	public static final int NORTH=0;
 	public static final int SOUTH=1;
@@ -27,6 +27,7 @@ public class Room extends TAObject {
 	public static final int DOWN=5;
 	public static final List<String> DIRECTIONS=new ArrayList<String>(Arrays.asList("north", "south", "east", "west", "up", "down", "n", "s", "e", "w", "u", "d"));
 
+	
 	public Room(String n, String d, int north, int s, int e, int w, int u, int down, boolean blah1, boolean blah2, int id) {
 		this();
 		name=n;
@@ -64,7 +65,7 @@ public class Room extends TAObject {
 		System.out.println(toPrint);
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Room roadM16=new Room("Road", "A large road stretching from north to south. The tree with the secret passageway is to the east and a vineyard is to the west.", 19, 17, 15, 28, -1, -1, true, false,16);
 		Room roadMS17=new Room("Road", "A large road stretching from north to south. There are some hills in the east and a vineyard to the west.", 16, 18, 22, 27, -1, -1, true, false,17);
 		Room roadS18=new Room("Road", "A large road stretching from north to south. There are some hills in the east.", 17, 18, 23, -1, -1, -1, true, false,18);
@@ -103,7 +104,7 @@ public class Room extends TAObject {
 		Room ancaCanyonMNW50=new Room("Anca Canyon", "A relatively narrow part of the canyon. The canyon continues to the east and takes a sharp turn to the south. The river falls down from a ledge above you in the south.", -1, -1, 47, -1, -1, -1, false, true,50);
 		Room ancaCanyonMSW51=new Room("Anca Canyon", "You are at the top of the waterfall which goes down the ledge in the north. The canyon continues to the west.", 50, -1, -1, 52, -1, -1, false, false,51);
 		Room ancaCanyonW52=new Room("Anca Canyon", "Anca Canyon abruptly ends at a rock wall in the west with a towering dwarf carved into it. The river emerges from the mouth of a tunnel beneath the dwarf.", -1, -1, 51, 53, -1, -1, true, false,52);
-	}
+	}*/
 
 	public Room() {
 		adjacentRooms=new Room[6];
@@ -403,7 +404,7 @@ public class Room extends TAObject {
 	public List<TACharacter> getHostileCharacters() {
 		List<TACharacter> toReturn=new ArrayList<TACharacter>();
 		for(TACharacter t:characters)
-			if(t.getProximity()>0)
+			if(t.isHostile())
 				toReturn.add(t);
 		return toReturn;
 	}
@@ -411,6 +412,10 @@ public class Room extends TAObject {
 	public List<TACharacter> getCharactersBySpeed() {
 		Set<TACharacter> toReturn=new TreeSet<TACharacter>(new Comparator<TACharacter>() {
 			public int compare(TACharacter one, TACharacter two) {
+				if(one instanceof Player)
+					return -1;
+				else if(two instanceof Player)
+					return 1;
 				return two.getSpeed()-one.getSpeed();
 			}
 		});
@@ -422,16 +427,16 @@ public class Room extends TAObject {
 
 	public Set<TAObject> getContents() {
 		Set<TAObject> fullContents=contents;
-		for(Chest c:chests)
+		/*for(Chest c:chests)
 			if(c.isOpen())
-				fullContents.addAll(c.getContents());
-		return contents;
+				fullContents.addAll(c.getContents());*/
+		return fullContents;
 	}
 
 	public String getFullText() {
-		String text=getName()+":\n"+getDescription();
+		String text=getNameWithEffects()+":\n"+getDescription();
 		for(TAObject obj:contents) {
-			if(obj.isVisible()) {
+			if(obj.isVisible()&&!(obj instanceof TACharacter)) {
 				if(obj.isPrinted()) {
 					if(obj.isPlural())
 						text+="\nThere are some "+obj.getFullNameWithArticle()+" here.";
@@ -448,8 +453,12 @@ public class Room extends TAObject {
 
 		}
 		for(TACharacter c:characters)
-			if(!c.equals(Main.game.getPlayer())&&c.isVisible()&&c.isPrinted()&&!Main.game.getPlayer().getFollowingCharacters().contains(c))
-				text+="\nThe "+c.getFullName()+" is standing here.";
+			if(!c.equals(Main.game.getPlayer())&&c.isVisible()&&c.isPrinted()&&!Main.game.getPlayer().getFollowingCharacters().contains(c)) {
+				if(c.isHostile())
+					text+="\n"+c.getFullName()+" is at proximity "+c.getProximity()+" and is ready to fight!";
+				else
+					text+="\n"+c.getFullName()+" is standing here.";
+			}
 		return text;
 	}
 
@@ -466,14 +475,24 @@ public class Room extends TAObject {
 		}
 		return text;*/
 	}
+	
+	public Room getAdjacent(int direction) {
+		return getAdjacent(direction, false, false);
+	}
+	
+	public Room getAdjacent(int direction, boolean justForName) {
+		return getAdjacent(direction, justForName, false);
+	}
 
-	public Room getAdjacent(int direction) throws IllegalArgumentException {
+	public Room getAdjacent(int direction, boolean justForName, boolean ignoreDoors) throws IllegalArgumentException {
 		try {
-			if(doors[direction]!=null&&!doors[direction].isOpen()) {
+			if(!ignoreDoors&&doors[direction]!=null&&!doors[direction].isOpen()) {
 				//Main.game.getView().println(doors[direction].getClosedMessage(doors[direction].getNumber(ID)));
 				return null;
 			}
 			Room newRoom=adjacentRooms[direction];
+			if(justForName)
+				return newRoom;
 			if(newRoom instanceof BoundaryRoom) {
 				Main.game.saveBlock(Main.game.getBlock());
 				Main.game.getPlayer().saveInfo();
@@ -511,7 +530,7 @@ public class Room extends TAObject {
 	public Door getDoor(int direction) throws IllegalArgumentException {
 		try {
 			return doors[direction];
-		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0<=direction<6");}
+		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0 <= direction < 6");}
 	}
 
 	public boolean isDark() {
@@ -533,17 +552,33 @@ public class Room extends TAObject {
 	public String getSoundName() {
 		return soundName;
 	}
+	
+	//includes things like {color} before the name
+	public String getNameWithEffects() {
+		return name;
+	}
+	
+	/*To account for rooms with {} before their actual name, e.g. the pasture.
+	* Before, typing "x pasture" would say "I don't see a pasture here." because
+	* the parser's object "pasture" didn't match the actual name of "{color}Pasture"
+	*/
+	public String getName() {
+		if(name != null && name.contains("}")) {
+			return name.substring(name.indexOf("}")+1);
+		}
+		return name;
+	}
 
 	public void setAdjacent(Room newRoom, int direction) throws IllegalArgumentException {
 		try {
 			adjacentRooms[direction]=newRoom;
-		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0<=direction<6");}
+		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0 <= direction < 6");}
 	}
 
 	public void setDoor(Door newDoor, int direction) throws IllegalArgumentException {
 		try {
 			doors[direction]=newDoor;
-		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0<=direction<6");}
+		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("0 <= direction < 6");}
 	}
 
 	public void setIsVisited(boolean visited) {

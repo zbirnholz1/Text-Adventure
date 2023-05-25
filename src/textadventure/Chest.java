@@ -251,7 +251,7 @@ public class Chest extends DynamicObject {
 			text+="\n"+tabs+Character.toUpperCase(obj.getFullNameWithArticle().charAt(0))+obj.getFullNameWithArticle().substring(1);
 			if(obj instanceof Chest&&((Chest)obj).isOpen()) {
 				if(!((Chest)obj).hasItems())
-					text+="\n"+tabs+"There is nothing in the "+obj.getFullName();
+					text+="\n"+tabs+"There is nothing in the "+obj.getFullName()+".";
 				else {
 					text+="\n"+tabs+"The "+obj.getFullName()+" contains:";
 					text+=((Chest)obj).getInventoryText(numTabs+1);
@@ -274,7 +274,11 @@ public class Chest extends DynamicObject {
 	}
 
 	public Set<TAObject> getContents() {
-		return inventory;
+		Set<TAObject> fullContents=inventory;
+		for(TAObject c:inventory)
+			if(c instanceof Chest&&((Chest)c).isOpen())
+				fullContents.addAll(((Chest)c).getContents());
+		return fullContents;
 	}
 
 	public String getDescription() {

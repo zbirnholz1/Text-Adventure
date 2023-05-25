@@ -52,6 +52,7 @@ public class Door extends DynamicObject {
 		} catch(ArrayIndexOutOfBoundsException e){throw new IllegalArgumentException("A door only connects 2 rooms!");}
 	}
 
+	//direction is with reference to that room
 	public int getDirection(int number) throws IllegalArgumentException {
 		try {
 			return roomDirections[number-1];

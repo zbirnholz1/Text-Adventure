@@ -293,7 +293,7 @@ public class Decoder {
 					} else {
 						decoder.initOutputBuffer(line, channels);
 					}
-					// TODO sometimes the line can not be opened (maybe not enough system resources?): display error message
+					// todo sometimes the line can not be opened (maybe not enough system resources?): display error message
 					// System.out.println(line.getFormat().toString());
 					line.open(format);
 					line.start();
@@ -312,7 +312,7 @@ public class Decoder {
 				/*if (error++ > 1000) {
                     break;
                 }*/
-				// TODO should not write directly
+				// todo should not write directly
 			} finally {
 				stream.closeFrame();
 			}
@@ -322,11 +322,12 @@ public class Decoder {
 		}
 		in.close();
 		if (line != null) {
-			while(line.isActive()&&!stop) {
+			line.drain();
+			/*while(line.isActive()&&!stop) {
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {e.printStackTrace();}
-			}
+			}*/
 			/*if(shouldFade)
 				fadeOut();*/
 			line.stop();
@@ -355,10 +356,11 @@ public class Decoder {
 			return;
 		new Thread() {
 			public void run() {
+				//try{sleep(200);}catch(InterruptedException e){e.printStackTrace();}
 				FloatControl volume=(FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
-				for(float i=-20; i<=0; i+=2) {
+				for(float i=-15; i<=0; i+=.15) {
 					volume.setValue(i);
-					try{sleep(50);}catch(InterruptedException e){e.printStackTrace();}
+					try{sleep(2);}catch(InterruptedException e){e.printStackTrace();}
 				}
 			}
 		}.start();
@@ -370,9 +372,9 @@ public class Decoder {
 		//new Thread() {
 			//public void run() {
 				FloatControl volume=(FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
-				for(float i=-2; i>-20; i-=2) {
+				for(float i=(float)-1.5; i>-15; i-=.15) {
 					volume.setValue(i);
-					try{Thread.sleep(50);}catch(InterruptedException e){e.printStackTrace();}
+					try{Thread.sleep(2);}catch(InterruptedException e){e.printStackTrace();}
 				}
 			//}
 		//}.start();

@@ -1,0 +1,40 @@
+{"conversationTitle: "a description of the conversation; used for listing multiple conversation possibilities",
+ "conversationRooms": [1, 2, 3],
+ "conversationStarters": ["a list", "of ways", "to start", "this conversation", "talk person"],
+ "vertices":[
+	{"ID": 0,
+		"effect": "whatever happens upon reaching this vertex",
+		"playerStatement": "whatever the player (automatically) says after they enter something; may or may not be NULL depending on if the player speaks first in the conversation", 
+    	"NPCStatement": "whatever the NPC says", 
+    	#if playerPrompt starts with "1." then the whole prompt should be formatted as a list of possible things to say
+    	"playerPrompt": "whatever the player says before the user gets to input something/what prompts the input (THIS INCLUDES NUMBERED CHOICES)",
+    	#results array contains ordered pairs of (possible input, destination vertex) to decide where the conversation goes
+    	#an empty or NULL results array indicates that this is the end of the conversation
+    	#a NULL string as the ONLY entry in the results array like (null, 4) means that this vertex does not accept user input and proceeds directly to the next vertex
+    	"playerInputResults": [
+    		["1", 1],
+    		["2", 5]
+    	],
+    	#losable indicates whether inputs not included in the results above are considered incorrect (and would fail/end the conversation)
+    	"losable": false,
+    	"incorrectResult": "whatever gets printed if the player types in an invalid input (in a losable OR an unlosable vertex)",
+    	"incorrectEffect": "whatever happens if the player types in an invalid input"
+    },
+    {"ID": 1,
+    	"effect": "whatever happens upon reaching this vertex",
+    	"playerStatement": "whatever the player (automatically) says after they enter something; may or may not be NULL depending on if the player speaks first in the conversation", 
+    	"NPCStatement": "whatever the NPC says", 
+    	"playerPrompt": "whatever the player says before the user gets to input something/what prompts the input (THIS INCLUDES NUMBERED CHOICES)",
+    	#the vertex number paired with a NULL key is the default (loss/failure) destination for an incorrect answer
+    	"playerInputResults": [
+    		[["*map*","*c(h)?artography*"], 2],
+    		[null, 6]
+    	],
+    	"incorrectResult": "No, that's not what he taught me about!",
+    	"losable": true,
+    	"incorrectResult": "whatever gets printed if the player types in an invalid input (in a losable OR an unlosable vertex)",
+    	"incorrectEffect": "whatever happens if the player types in an invalid input"
+    }
+    #etc. for the whole conversation
+ ]
+}

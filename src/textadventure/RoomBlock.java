@@ -8,6 +8,7 @@ public class RoomBlock {
 	private BufferedReader reader;
 	private int maxID, minID;
 	private int blockNumber;
+	private static final String ROOM_DOOR_DIVIDER = "-----";
 
 	public static final Map<Integer, Integer> blockLocations=initializeBlockLocations(); //contains Room IDs (switch to actual Rooms?) that
 	//point to the numbers of the blocks they begin
@@ -15,9 +16,9 @@ public class RoomBlock {
 	//RoomBlock files are formatted:
 	//minID
 	//maxID
-	//One room per line...
+	//One room per many lines (ends with }, potentially blank lines between rooms)...
 	//-----
-	//One door per line...
+	//One door per several lines (ends with }, potentially blank lines between rooms)...
 	public RoomBlock(int number, String saveName) {
 		blockNumber=number;
 		String path="block"+blockNumber+".taf";
@@ -37,8 +38,9 @@ public class RoomBlock {
 			minID=Integer.parseInt(reader.readLine());
 			maxID=Integer.parseInt(reader.readLine());
 			//load the Rooms from a file
-			String line=reader.readLine(); //or however many lines constitute one Room
-			while(line!=null&&!line.equals("-----")) {
+			String line = readObject(reader);
+			while(line!=null&&!line.equals(ROOM_DOOR_DIVIDER)) {
+				//System.out.println(line); //for debugging
 				JSONObject source=new JSONObject(line);
 				Room room=new Room();
 				//initialize room's instance variables:
@@ -77,8 +79,10 @@ public class RoomBlock {
 				if(source.has("verbEffects")) {
 					JSONArray JSONVerbEffects=source.getJSONArray("verbEffects");
 					Map<String, String> verbEffects=new HashMap<String, String>(JSONVerbEffects.length());
-					for(int i=0; i<JSONVerbEffects.length(); i++)
+					for(int i=0; i<JSONVerbEffects.length(); i++) {
+						//the effect is NOT lowercased because it might contain a message to be printed
 						verbEffects.put(JSONVerbEffects.getJSONArray(i).getString(0), JSONVerbEffects.getJSONArray(i).getString(1));
+					}
 					room.setVerbEffects(verbEffects);
 				}
 				if(source.has("darkMessage"))
@@ -146,14 +150,16 @@ public class RoomBlock {
 							((TACharacter)room.getObject(h)).becomeHostileTo(c);*/
 					}
 				}
-				line=reader.readLine(); //or however many lines constitute one Room
+				line = readObject(reader); //or however many lines constitute one Room
 			}
-			if(line!=null&&line.equals("-----"))
-				line=reader.readLine();
+			if(line!=null&&line.equals(ROOM_DOOR_DIVIDER))
+				line=readObject(reader);
 			while(line!=null) {
 				//put the doors in the rooms
 				Door door=null;
-				try{door=new Door(new JSONObject(line));}catch(JSONException e){Main.game.getView().println("Something went wrong: "+e);}
+				try{
+					door=new Door(new JSONObject(line));
+				} catch(JSONException e){Main.game.getView().println("Something went wrong: "+e);}
 				if(door.getID(1)>=minID&&door.getID(1)<=maxID) {
 					rooms.get(door.getID(1)).setDoor(door, door.getDirection(1));
 					rooms.get(door.getID(1)).add(door);
@@ -162,7 +168,7 @@ public class RoomBlock {
 					rooms.get(door.getID(2)).setDoor(door, door.getDirection(2));
 					rooms.get(door.getID(2)).add(door);
 				}
-				line=reader.readLine();
+				line = readObject(reader);
 			}
 			//connect the Rooms
 			for(Integer currentRoomID:rooms.keySet()) {
@@ -181,6 +187,31 @@ public class RoomBlock {
 				}
 			}
 		} catch (Exception e){System.out.println("Something went wrong RB: "+e);e.printStackTrace(System.out);}
+	}
+	
+	/*
+	 * Reads an object (Room or Door) in its JSON form from the file
+	 */
+	private static String readObject(BufferedReader reader) throws IOException {
+		if (!reader.ready()) return null;
+		String line = reader.readLine();
+		while (line.trim().isEmpty() || line.trim().startsWith("#")) { //skip comments, etc.
+			if (!reader.ready()) return null;
+			line = reader.readLine();
+		}
+		if (line.equals(ROOM_DOOR_DIVIDER)) {
+			return line;
+		}
+		String JSONString = line;
+		while (!line.endsWith("}") || Character.isWhitespace(line.charAt(0))) { //continue reading lines until the end of the object
+			line = reader.readLine();
+			if (line.trim().isEmpty() || line.trim().startsWith("#")) { //skip comments, etc.
+				continue;
+			}
+			JSONString+=line.trim();
+		}
+		System.out.println(JSONString);
+		return JSONString;
 	}
 
 	public Room getFirstRoom() {
